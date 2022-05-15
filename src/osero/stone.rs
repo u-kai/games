@@ -20,13 +20,13 @@ impl Debug for OseroStone {
         let d = self;
         match d {
             OseroStone::Black => {
-                write!(f, "○")
+                write!(f, "●")
             }
             OseroStone::Empty => {
                 write!(f, " ")
             }
             OseroStone::White => {
-                write!(f, "●")
+                write!(f, "○")
             }
         }
     }
