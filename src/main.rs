@@ -7,6 +7,6 @@ mod osero;
 fn main() {
     let mut gomoku = GomokuCLI::new();
     gomoku.start();
-    let mut osero = OseroCLI::new();
-    osero.start()
+    //let mut osero = OseroCLI::new();
+    //osero.start()
 }

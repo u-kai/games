@@ -2,7 +2,45 @@
 
 ## Learn rust and education OOP
 
+- clear gomoku
 - clear osero
+
+## How to use GomokuCLI
+
+```
+$ cargo run
+START Gomoku Narabe!!!
+| | | |
+| | | |
+| | | |
+
+○の番です
+| | | |
+| |○| |
+| | | |
+
+✖️の番です
+| | | |
+| |○| |
+| |✖️| |
+
+○の番です
+|○| | |
+| |○| |
+| |✖️| |
+
+✖️の番です
+|○| | |
+| |○|✖️|
+| |✖️| |
+
+○の番です
+|○| | |
+| |○|✖️|
+| |✖️|○|
+
+winner is ○
+```
 
 ## How to use OseroCLI
 
