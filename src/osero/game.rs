@@ -39,14 +39,14 @@ impl Osero {
         stone: OseroStone,
     ) -> Result<(), String> {
         if self.is_puttable(holizon, valtical, stone) {
-            self.challenge_up(holizon, valtical, stone);
-            self.challenge_down(holizon, valtical, stone);
-            self.challenge_right(holizon, valtical, stone);
-            self.challenge_left(holizon, valtical, stone);
-            self.challenge_up_right(holizon, valtical, stone);
-            self.challenge_down_right(holizon, valtical, stone);
-            self.challenge_up_left(holizon, valtical, stone);
-            self.challenge_down_left(holizon, valtical, stone);
+            self.change_up(holizon, valtical, stone);
+            self.change_down(holizon, valtical, stone);
+            self.change_right(holizon, valtical, stone);
+            self.change_left(holizon, valtical, stone);
+            self.change_up_right(holizon, valtical, stone);
+            self.change_down_right(holizon, valtical, stone);
+            self.change_up_left(holizon, valtical, stone);
+            self.change_down_left(holizon, valtical, stone);
             Ok(())
         } else {
             Err(format!("can not put [{},{}]", holizon, valtical))
@@ -81,56 +81,56 @@ impl Osero {
         self.down_left_next_index(holizon, valtical, stone)
             .is_some()
     }
-    fn challenge_up(&mut self, holizon: usize, valtical: usize, stone: OseroStone) {
+    fn change_up(&mut self, holizon: usize, valtical: usize, stone: OseroStone) {
         if let Some(next_up_index) = self.up_next_v_index(holizon, valtical, stone) {
             for v in next_up_index..=valtical {
                 self.masu.change(holizon, v, stone);
             }
         }
     }
-    fn challenge_down(&mut self, holizon: usize, valtical: usize, stone: OseroStone) {
+    fn change_down(&mut self, holizon: usize, valtical: usize, stone: OseroStone) {
         if let Some(next_down_index) = self.down_next_v_index(holizon, valtical, stone) {
             for v in valtical..=next_down_index {
                 self.masu.change(holizon, v, stone);
             }
         }
     }
-    fn challenge_right(&mut self, holizon: usize, valtical: usize, stone: OseroStone) {
+    fn change_right(&mut self, holizon: usize, valtical: usize, stone: OseroStone) {
         if let Some(next_right_index) = self.right_next_h_index(holizon, valtical, stone) {
             for h in holizon..=next_right_index {
                 self.masu.change(h, valtical, stone);
             }
         }
     }
-    fn challenge_left(&mut self, holizon: usize, valtical: usize, stone: OseroStone) {
+    fn change_left(&mut self, holizon: usize, valtical: usize, stone: OseroStone) {
         if let Some(next_left_index) = self.left_next_h_index(holizon, valtical, stone) {
             for h in next_left_index..=holizon {
                 self.masu.change(h, valtical, stone);
             }
         }
     }
-    fn challenge_up_right(&mut self, holizon: usize, valtical: usize, stone: OseroStone) {
+    fn change_up_right(&mut self, holizon: usize, valtical: usize, stone: OseroStone) {
         if let Some((n_h, n_v)) = self.up_right_next_index(holizon, valtical, stone) {
             for (i, h) in (holizon..=n_h).enumerate() {
                 self.masu.change(h, valtical - i, stone)
             }
         }
     }
-    fn challenge_down_right(&mut self, holizon: usize, valtical: usize, stone: OseroStone) {
+    fn change_down_right(&mut self, holizon: usize, valtical: usize, stone: OseroStone) {
         if let Some((n_h, n_v)) = self.down_right_next_index(holizon, valtical, stone) {
             for (i, h) in (holizon..=n_h).enumerate() {
                 self.masu.change(h, valtical + i, stone)
             }
         }
     }
-    fn challenge_up_left(&mut self, holizon: usize, valtical: usize, stone: OseroStone) {
+    fn change_up_left(&mut self, holizon: usize, valtical: usize, stone: OseroStone) {
         if let Some((n_h, n_v)) = self.up_left_next_index(holizon, valtical, stone) {
             for (i, h) in (n_h..=holizon).enumerate() {
                 self.masu.change(h, n_v + i, stone)
             }
         }
     }
-    fn challenge_down_left(&mut self, holizon: usize, valtical: usize, stone: OseroStone) {
+    fn change_down_left(&mut self, holizon: usize, valtical: usize, stone: OseroStone) {
         if let Some((n_h, n_v)) = self.down_left_next_index(holizon, valtical, stone) {
             for (i, h) in (n_h..=holizon).enumerate() {
                 self.masu.change(h, n_v - i, stone)
