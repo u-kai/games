@@ -32,12 +32,6 @@ where
     pub fn get(&self, holizon: usize, valtical: usize) -> T {
         self.masu[valtical][holizon]
     }
-    pub fn is_edge(&self, holizon: usize, valtical: usize) -> bool {
-        valtical == (self.v_len - 1) || holizon == (self.h_len - 1) || holizon == 0 || valtical == 0
-    }
-    pub fn is_out_bound(&self, holizon: usize, valtical: usize) -> bool {
-        valtical >= self.v_len || holizon >= self.h_len
-    }
     pub fn get_up(&self, holizon: usize, valtical: usize) -> Result<T, String> {
         match MasuIndex::new(self.h_len, self.v_len, holizon, valtical).get_up() {
             Ok(new_index) => Ok(self.get(new_index.get_h(), new_index.get_v())),
@@ -200,20 +194,6 @@ mod masu_test {
         assert_eq!(masu.get_up(2, 1).unwrap(), OseroStone::Empty);
         assert_eq!(masu.get_up(0, 0), Err("[0,0] up is out bound".to_string()));
         assert_eq!(masu.get_up(7, 0), Err("[7,0] up is out bound".to_string()));
-    }
-    #[test]
-    fn is_out_bound_test() {
-        let masu: Masu<OseroStone> = Masu::new(8, 8);
-        assert_eq!(masu.is_out_bound(8, 0), true);
-        assert_eq!(masu.is_out_bound(1, 9), true);
-        assert_eq!(masu.is_out_bound(7, 7), false);
-    }
-    #[test]
-    fn is_edge_test() {
-        let masu: Masu<OseroStone> = Masu::new(8, 8);
-        assert_eq!(masu.is_edge(3, 5), false);
-        assert_eq!(masu.is_edge(7, 0), true);
-        assert_eq!(masu.is_edge(3, 7), true);
     }
     #[test]
     fn change_test() {

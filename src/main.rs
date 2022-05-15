@@ -19,10 +19,4 @@ fn main() {
     osero.print();
     osero.put(5, 2, OseroStone::Black);
     osero.print();
-    osero.put(6, 3, OseroStone::White);
-    osero.print();
-    osero.put(2, 5, OseroStone::White);
-    osero.print();
-    osero.put(4, 5, OseroStone::Black);
-    osero.print();
 }
