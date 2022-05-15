@@ -372,10 +372,7 @@ impl OseroBoard {
 #[cfg(test)]
 mod osero_test {
 
-    use crate::{
-        masu::masu::Masu,
-        osero::{self, stone::OseroStone},
-    };
+    use crate::{masu::masu::Masu, osero::stone::OseroStone};
 
     use super::OseroBoard;
 
@@ -393,11 +390,40 @@ mod osero_test {
         assert_eq!(osero.is_puttable(3, 3, OseroStone::Black), false);
         osero.print();
         assert_eq!(osero.is_puttable(2, 3, OseroStone::Black), true);
-        osero.put(2, 3, OseroStone::Black);
+        osero.put(2, 3, OseroStone::Black).unwrap();
         osero.print();
         assert_eq!(osero.is_puttable(4, 2, OseroStone::Black), false);
         assert_eq!(osero.is_puttable(4, 2, OseroStone::White), true);
     }
+    #[test]
+    fn is_puttable_test_full_white() {
+        // most quick white
+        // 5 4
+        // 5 5
+        // 4 5
+        // 5 3
+        // 4 2
+        // 3 1
+        // 3 2
+        // 3 5
+        // 2 3
+        // 1 3
+        //
+        let mut osero = OseroBoard::new_game();
+        osero.put(5, 4, OseroStone::Black).unwrap();
+        osero.put(5, 5, OseroStone::White).unwrap();
+        osero.put(4, 5, OseroStone::Black).unwrap();
+        osero.put(5, 3, OseroStone::White).unwrap();
+        osero.put(4, 2, OseroStone::Black).unwrap();
+        osero.put(3, 1, OseroStone::White).unwrap();
+        osero.put(3, 2, OseroStone::Black).unwrap();
+        osero.put(3, 5, OseroStone::White).unwrap();
+        osero.put(2, 3, OseroStone::Black).unwrap();
+        osero.put(1, 3, OseroStone::White).unwrap();
+        assert_eq!(osero.get_black_num(), 0);
+        assert_eq!(osero.get_white_num(), 14);
+    }
+
     #[test]
     fn is_pass_test() {
         let osero = OseroBoard::new_game();
@@ -415,6 +441,16 @@ mod osero_test {
         }
         let osero = OseroBoard::almost_fill();
         assert_eq!(osero.is_pass(OseroStone::White), true);
+        let mut osero = OseroBoard::new_game();
+        osero.put(5, 4, OseroStone::Black).unwrap();
+        osero.put(5, 5, OseroStone::White).unwrap();
+        osero.put(3, 2, OseroStone::Black).unwrap();
+        osero.put(6, 4, OseroStone::White).unwrap();
+        osero.put(7, 4, OseroStone::Black).unwrap();
+        osero.put(7, 3, OseroStone::White).unwrap();
+        osero.put(5, 6, OseroStone::Black).unwrap();
+        osero.put(7, 5, OseroStone::White).unwrap();
+        assert_eq!(osero.is_pass(OseroStone::Black), true);
     }
     #[test]
     fn is_fill_test() {
@@ -437,27 +473,21 @@ mod osero_test {
     #[test]
     fn put_test() {
         let mut osero = OseroBoard::new_game();
-        osero.put(2, 3, OseroStone::Black);
+        osero.put(2, 3, OseroStone::Black).unwrap();
         assert_eq!(osero.masu(3, 3), OseroStone::Black);
-        osero.print();
-        osero.put(4, 2, OseroStone::White);
-        osero.print();
+        osero.put(4, 2, OseroStone::White).unwrap();
         assert_eq!(osero.masu(4, 3), OseroStone::White);
-        osero.put(5, 3, OseroStone::Black);
-        osero.print();
+        osero.put(5, 3, OseroStone::Black).unwrap();
         assert_eq!(osero.masu(4, 3), OseroStone::Black);
-        osero.put(2, 2, OseroStone::White);
+        osero.put(2, 2, OseroStone::White).unwrap();
         assert_eq!(osero.masu(3, 3), OseroStone::White);
-        osero.put(5, 2, OseroStone::Black);
-        assert_eq!(osero.masu(4, 3), OseroStone::Black);
-        osero.print();
     }
     #[test]
     fn get_num() {
         let mut osero = OseroBoard::new_game();
         assert_eq!(osero.get_black_num(), 2);
         assert_eq!(osero.get_white_num(), 2);
-        osero.put(2, 3, OseroStone::Black);
+        osero.put(2, 3, OseroStone::Black).unwrap();
         assert_eq!(osero.get_black_num(), 4);
         assert_eq!(osero.get_white_num(), 1);
     }
