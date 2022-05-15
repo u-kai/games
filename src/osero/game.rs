@@ -1,338 +1,107 @@
-use crate::masu::masu::Masu;
+use std::io::stdin;
 
-use super::stone::{self, OseroStone};
-pub struct Osero {
-    masu: Masu<OseroStone>,
+use super::{board::OseroBoard, stone::OseroStone};
+
+#[derive(Debug, Clone, Copy)]
+struct OseroPlayer {
+    stone: OseroStone,
+    stone_num: usize,
+}
+impl OseroPlayer {
+    pub fn new(stone: OseroStone, stone_num: usize) -> Self {
+        OseroPlayer { stone, stone_num }
+    }
+    pub fn get_stone(&self) -> OseroStone {
+        self.stone
+    }
+    pub fn get_stone_num(&self) -> usize {
+        self.stone_num
+    }
+    pub fn set_stone_num(&mut self, num: usize) {
+        self.stone_num = num
+    }
+    pub fn stone_color(&self) -> &str {
+        self.stone.color()
+    }
 }
 
-impl Osero {
-    pub fn new_game() -> Osero {
-        let mut masu = Masu::new(8, 8);
-        masu.change(3, 3, OseroStone::White);
-        masu.change(3, 4, OseroStone::Black);
-        masu.change(4, 3, OseroStone::Black);
-        masu.change(4, 4, OseroStone::White);
-        Osero { masu }
-    }
-    pub fn masu(&self, holizon: usize, valtical: usize) -> OseroStone {
-        self.masu.get(holizon, valtical)
-    }
-    pub fn is_puttable(&self, holizon: usize, valtical: usize, stone: OseroStone) -> bool {
-        match self.masu(holizon, valtical) {
-            OseroStone::Empty => {
-                self.is_up_puttable(holizon, valtical, stone)
-                    || self.is_down_puttable(holizon, valtical, stone)
-                    || self.is_right_puttable(holizon, valtical, stone)
-                    || self.is_left_puttable(holizon, valtical, stone)
-                    || self.is_up_right_puttable(holizon, valtical, stone)
-                    || self.is_down_right_puttable(holizon, valtical, stone)
-                    || self.is_up_left_puttable(holizon, valtical, stone)
-                    || self.is_down_left_puttable(holizon, valtical, stone)
-            }
-            _ => false,
+/// 5 4
+/// 5 5
+/// 4 5
+/// 5 3
+/// 4 2
+/// 3 1
+/// 3 2
+/// 3 5
+/// 2 3
+/// 1 3
+pub struct OseroCLI {
+    player1: OseroPlayer,
+    player2: OseroPlayer,
+    board: OseroBoard,
+    turn: OseroPlayer,
+}
+impl OseroCLI {
+    pub fn new() -> Self {
+        let player1 = OseroPlayer::new(OseroStone::Black, 2);
+        let player2 = OseroPlayer::new(OseroStone::White, 2);
+        OseroCLI {
+            player1,
+            player2,
+            board: OseroBoard::new_game(),
+            turn: player1,
         }
     }
-    pub fn put(
-        &mut self,
-        holizon: usize,
-        valtical: usize,
-        stone: OseroStone,
-    ) -> Result<(), String> {
-        if self.is_puttable(holizon, valtical, stone) {
-            self.change_up(holizon, valtical, stone);
-            self.change_down(holizon, valtical, stone);
-            self.change_right(holizon, valtical, stone);
-            self.change_left(holizon, valtical, stone);
-            self.change_up_right(holizon, valtical, stone);
-            self.change_down_right(holizon, valtical, stone);
-            self.change_up_left(holizon, valtical, stone);
-            self.change_down_left(holizon, valtical, stone);
-            Ok(())
+    pub fn switch_turn(&mut self) {
+        match self.turn.get_stone() {
+            OseroStone::Black => self.turn = self.player2,
+            OseroStone::White => self.turn = self.player1,
+            _ => panic!("not player is empty"),
+        }
+    }
+    pub fn start(&mut self) {
+        println!("START Osero!!!");
+        self.board.print();
+        loop {
+            if self.board.is_pass(self.turn.get_stone()) {
+                self.switch_turn();
+                continue;
+            }
+            println!("{}の番です", self.turn.stone_color());
+            let h_v = self.get_h_v();
+            match self.board.put(h_v.0, h_v.1, self.turn.get_stone()) {
+                Ok(_) => self.board.print(),
+                Err(_) => {
+                    println!(
+                        "[{},{}]には置けません.もう一度選択してください",
+                        h_v.0, h_v.1
+                    );
+                    continue;
+                }
+            }
+            if self.board.is_fill()
+                || (self.board.is_pass(OseroStone::White) && self.board.is_pass(OseroStone::Black))
+            {
+                break;
+            }
+            self.switch_turn()
+        }
+        let message = if self.board.get_black_num() > self.board.get_white_num() {
+            format!("{} is win", self.player1.stone_color())
+        } else if self.board.get_black_num() < self.board.get_white_num() {
+            format!("{} is win", self.player2.stone_color())
         } else {
-            Err(format!("can not put [{},{}]", holizon, valtical))
-        }
+            "Drow".to_string()
+        };
+        println!("{}", message);
     }
-    pub fn print(&self) {
-        self.masu.print()
-    }
-    fn is_up_puttable(&self, holizon: usize, valtical: usize, stone: OseroStone) -> bool {
-        self.up_next_v_index(holizon, valtical, stone).is_some()
-    }
-    fn is_down_puttable(&self, holizon: usize, valtical: usize, stone: OseroStone) -> bool {
-        self.down_next_v_index(holizon, valtical, stone).is_some()
-    }
-    fn is_right_puttable(&self, holizon: usize, valtical: usize, stone: OseroStone) -> bool {
-        self.right_next_h_index(holizon, valtical, stone).is_some()
-    }
-    fn is_left_puttable(&self, holizon: usize, valtical: usize, stone: OseroStone) -> bool {
-        self.left_next_h_index(holizon, valtical, stone).is_some()
-    }
-    fn is_up_right_puttable(&self, holizon: usize, valtical: usize, stone: OseroStone) -> bool {
-        self.up_right_next_index(holizon, valtical, stone).is_some()
-    }
-    fn is_down_right_puttable(&self, holizon: usize, valtical: usize, stone: OseroStone) -> bool {
-        self.down_right_next_index(holizon, valtical, stone)
-            .is_some()
-    }
-    fn is_up_left_puttable(&self, holizon: usize, valtical: usize, stone: OseroStone) -> bool {
-        self.up_left_next_index(holizon, valtical, stone).is_some()
-    }
-    fn is_down_left_puttable(&self, holizon: usize, valtical: usize, stone: OseroStone) -> bool {
-        self.down_left_next_index(holizon, valtical, stone)
-            .is_some()
-    }
-    fn change_up(&mut self, holizon: usize, valtical: usize, stone: OseroStone) {
-        if let Some(next_up_index) = self.up_next_v_index(holizon, valtical, stone) {
-            for v in next_up_index..=valtical {
-                self.masu.change(holizon, v, stone);
-            }
-        }
-    }
-    fn change_down(&mut self, holizon: usize, valtical: usize, stone: OseroStone) {
-        if let Some(next_down_index) = self.down_next_v_index(holizon, valtical, stone) {
-            for v in valtical..=next_down_index {
-                self.masu.change(holizon, v, stone);
-            }
-        }
-    }
-    fn change_right(&mut self, holizon: usize, valtical: usize, stone: OseroStone) {
-        if let Some(next_right_index) = self.right_next_h_index(holizon, valtical, stone) {
-            for h in holizon..=next_right_index {
-                self.masu.change(h, valtical, stone);
-            }
-        }
-    }
-    fn change_left(&mut self, holizon: usize, valtical: usize, stone: OseroStone) {
-        if let Some(next_left_index) = self.left_next_h_index(holizon, valtical, stone) {
-            for h in next_left_index..=holizon {
-                self.masu.change(h, valtical, stone);
-            }
-        }
-    }
-    fn change_up_right(&mut self, holizon: usize, valtical: usize, stone: OseroStone) {
-        if let Some((n_h, n_v)) = self.up_right_next_index(holizon, valtical, stone) {
-            for (i, h) in (holizon..=n_h).enumerate() {
-                self.masu.change(h, valtical - i, stone)
-            }
-        }
-    }
-    fn change_down_right(&mut self, holizon: usize, valtical: usize, stone: OseroStone) {
-        if let Some((n_h, n_v)) = self.down_right_next_index(holizon, valtical, stone) {
-            for (i, h) in (holizon..=n_h).enumerate() {
-                self.masu.change(h, valtical + i, stone)
-            }
-        }
-    }
-    fn change_up_left(&mut self, holizon: usize, valtical: usize, stone: OseroStone) {
-        if let Some((n_h, n_v)) = self.up_left_next_index(holizon, valtical, stone) {
-            for (i, h) in (n_h..=holizon).enumerate() {
-                self.masu.change(h, n_v + i, stone)
-            }
-        }
-    }
-    fn change_down_left(&mut self, holizon: usize, valtical: usize, stone: OseroStone) {
-        if let Some((n_h, n_v)) = self.down_left_next_index(holizon, valtical, stone) {
-            for (i, h) in (n_h..=holizon).enumerate() {
-                self.masu.change(h, n_v - i, stone)
-            }
-        }
-    }
-
-    fn up_next_v_index(&self, holizon: usize, valtical: usize, stone: OseroStone) -> Option<usize> {
-        match self.masu.get_up(holizon, valtical) {
-            Ok(up_stone) => match up_stone {
-                OseroStone::Empty => None,
-                _ => {
-                    if up_stone == stone {
-                        Some(valtical - 1)
-                    } else {
-                        self.up_next_v_index(holizon, valtical - 1, stone)
-                    }
-                }
-            },
-            Err(_) => None,
-        }
-    }
-    fn up_right_next_index(
-        &self,
-        holizon: usize,
-        valtical: usize,
-        stone: OseroStone,
-    ) -> Option<(usize, usize)> {
-        match self.masu.get_up_right(holizon, valtical) {
-            Ok(up_stone) => match up_stone {
-                OseroStone::Empty => None,
-                _ => {
-                    if up_stone == stone {
-                        Some((holizon + 1, valtical - 1))
-                    } else {
-                        self.up_right_next_index(holizon + 1, valtical - 1, stone)
-                    }
-                }
-            },
-            Err(_) => None,
-        }
-    }
-    fn up_left_next_index(
-        &self,
-        holizon: usize,
-        valtical: usize,
-        stone: OseroStone,
-    ) -> Option<(usize, usize)> {
-        match self.masu.get_up_left(holizon, valtical) {
-            Ok(up_stone) => match up_stone {
-                OseroStone::Empty => None,
-                _ => {
-                    if up_stone == stone {
-                        Some((holizon - 1, valtical - 1))
-                    } else {
-                        self.up_left_next_index(holizon - 1, valtical - 1, stone)
-                    }
-                }
-            },
-            Err(_) => None,
-        }
-    }
-    fn down_next_v_index(
-        &self,
-        holizon: usize,
-        valtical: usize,
-        stone: OseroStone,
-    ) -> Option<usize> {
-        match self.masu.get_down(holizon, valtical) {
-            Ok(down_stone) => match down_stone {
-                OseroStone::Empty => None,
-                _ => {
-                    if down_stone == stone {
-                        Some(valtical + 1)
-                    } else {
-                        self.down_next_v_index(holizon, valtical + 1, stone)
-                    }
-                }
-            },
-            Err(_) => None,
-        }
-    }
-    fn down_right_next_index(
-        &self,
-        holizon: usize,
-        valtical: usize,
-        stone: OseroStone,
-    ) -> Option<(usize, usize)> {
-        match self.masu.get_down_right(holizon, valtical) {
-            Ok(down_stone) => match down_stone {
-                OseroStone::Empty => None,
-                _ => {
-                    if down_stone == stone {
-                        Some((holizon + 1, valtical + 1))
-                    } else {
-                        self.down_right_next_index(holizon + 1, valtical + 1, stone)
-                    }
-                }
-            },
-            Err(_) => None,
-        }
-    }
-    fn down_left_next_index(
-        &self,
-        holizon: usize,
-        valtical: usize,
-        stone: OseroStone,
-    ) -> Option<(usize, usize)> {
-        match self.masu.get_down_left(holizon, valtical) {
-            Ok(up_stone) => match up_stone {
-                OseroStone::Empty => None,
-                _ => {
-                    if up_stone == stone {
-                        Some((holizon - 1, valtical + 1))
-                    } else {
-                        self.down_left_next_index(holizon - 1, valtical + 1, stone)
-                    }
-                }
-            },
-            Err(_) => None,
-        }
-    }
-    fn right_next_h_index(
-        &self,
-        holizon: usize,
-        valtical: usize,
-        stone: OseroStone,
-    ) -> Option<usize> {
-        match self.masu.get_right(holizon, valtical) {
-            Ok(up_stone) => match up_stone {
-                OseroStone::Empty => None,
-                _ => {
-                    if up_stone == stone {
-                        Some(holizon + 1)
-                    } else {
-                        self.right_next_h_index(holizon + 1, valtical, stone)
-                    }
-                }
-            },
-            Err(_) => None,
-        }
-    }
-    fn left_next_h_index(
-        &self,
-        holizon: usize,
-        valtical: usize,
-        stone: OseroStone,
-    ) -> Option<usize> {
-        match self.masu.get_left(holizon, valtical) {
-            Ok(left_stone) => match left_stone {
-                OseroStone::Empty => None,
-                _ => {
-                    if left_stone == stone {
-                        Some(holizon - 1)
-                    } else {
-                        self.left_next_h_index(holizon - 1, valtical, stone)
-                    }
-                }
-            },
-            Err(_) => None,
-        }
-    }
-}
-
-#[cfg(test)]
-mod osero_test {
-    use crate::osero::stone::OseroStone;
-
-    use super::Osero;
-
-    #[test]
-    fn new_game_test() {
-        let game = Osero::new_game();
-        assert_eq!(game.masu(3, 3), OseroStone::White);
-        assert_eq!(game.masu(3, 4), OseroStone::Black);
-        assert_eq!(game.masu(4, 3), OseroStone::Black);
-        assert_eq!(game.masu(4, 4), OseroStone::White);
-    }
-    #[test]
-    fn is_puttable_test() {
-        let osero = Osero::new_game();
-        assert_eq!(osero.is_puttable(3, 3, OseroStone::Black), false);
-        osero.print();
-        assert_eq!(osero.is_puttable(2, 3, OseroStone::Black), true);
-        assert_eq!(osero.is_puttable(4, 2, OseroStone::Black), true);
-    }
-    #[test]
-    fn put_test() {
-        let mut osero = Osero::new_game();
-        osero.put(2, 3, OseroStone::Black);
-        assert_eq!(osero.masu(3, 3), OseroStone::Black);
-        osero.print();
-        osero.put(4, 2, OseroStone::White);
-        osero.print();
-        assert_eq!(osero.masu(4, 3), OseroStone::White);
-        osero.put(5, 3, OseroStone::Black);
-        osero.print();
-        assert_eq!(osero.masu(4, 3), OseroStone::Black);
-        osero.put(2, 2, OseroStone::White);
-        assert_eq!(osero.masu(3, 3), OseroStone::White);
-        osero.put(5, 2, OseroStone::Black);
-        assert_eq!(osero.masu(4, 3), OseroStone::Black);
-        osero.print();
+    fn get_h_v(&self) -> (usize, usize) {
+        let mut buf = String::new();
+        let _ = stdin().read_line(&mut buf);
+        let vec = buf
+            .split(" ")
+            .filter_map(|s| s.trim().parse::<usize>().ok())
+            .collect::<Vec<_>>();
+        (vec[0], vec[1])
     }
 }

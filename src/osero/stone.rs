@@ -6,6 +6,15 @@ pub enum OseroStone {
     Black,
     Empty,
 }
+impl OseroStone {
+    pub fn color(&self) -> &str {
+        match self {
+            OseroStone::White => "WHITE",
+            OseroStone::Black => "BLACK",
+            OseroStone::Empty => "EMPTY",
+        }
+    }
+}
 impl Debug for OseroStone {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         let d = self;
