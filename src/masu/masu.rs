@@ -23,9 +23,7 @@ where
             masu: vec![vec![T::default(); h_len]; v_len],
         }
     }
-    pub fn all(&self) -> &Vec<Vec<T>> {
-        &self.masu
-    }
+
     pub fn change(&mut self, holizon: usize, valtical: usize, koma: T) {
         self.masu[valtical][holizon] = koma
     }
@@ -204,8 +202,12 @@ mod masu_test {
 
     #[test]
     fn new_test() {
+        impl Masu<OseroStone> {
+            pub fn all(&self) -> &Vec<Vec<OseroStone>> {
+                &self.masu
+            }
+        }
         let masu: Masu<OseroStone> = Masu::new(8, 8);
-        masu.print();
         assert_eq!(
             &vec![
                 vec![

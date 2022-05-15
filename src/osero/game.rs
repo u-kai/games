@@ -5,21 +5,15 @@ use super::{board::OseroBoard, stone::OseroStone};
 #[derive(Debug, Clone, Copy)]
 struct OseroPlayer {
     stone: OseroStone,
-    stone_num: usize,
 }
 impl OseroPlayer {
-    pub fn new(stone: OseroStone, stone_num: usize) -> Self {
-        OseroPlayer { stone, stone_num }
+    pub fn new(stone: OseroStone) -> Self {
+        OseroPlayer { stone }
     }
     pub fn get_stone(&self) -> OseroStone {
         self.stone
     }
-    pub fn get_stone_num(&self) -> usize {
-        self.stone_num
-    }
-    pub fn set_stone_num(&mut self, num: usize) {
-        self.stone_num = num
-    }
+
     pub fn stone_color(&self) -> &str {
         self.stone.color()
     }
@@ -43,8 +37,8 @@ pub struct OseroCLI {
 }
 impl OseroCLI {
     pub fn new() -> Self {
-        let player1 = OseroPlayer::new(OseroStone::Black, 2);
-        let player2 = OseroPlayer::new(OseroStone::White, 2);
+        let player1 = OseroPlayer::new(OseroStone::Black);
+        let player2 = OseroPlayer::new(OseroStone::White);
         OseroCLI {
             player1,
             player2,

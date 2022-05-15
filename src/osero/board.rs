@@ -184,14 +184,14 @@ impl OseroBoard {
         }
     }
     fn change_up_right(&mut self, holizon: usize, valtical: usize, stone: OseroStone) {
-        if let Some((n_h, n_v)) = self.up_right_next_index(holizon, valtical, stone) {
+        if let Some((n_h, _)) = self.up_right_next_index(holizon, valtical, stone) {
             for (i, h) in (holizon..=n_h).enumerate() {
                 self.masu.change(h, valtical - i, stone)
             }
         }
     }
     fn change_down_right(&mut self, holizon: usize, valtical: usize, stone: OseroStone) {
-        if let Some((n_h, n_v)) = self.down_right_next_index(holizon, valtical, stone) {
+        if let Some((n_h, _)) = self.down_right_next_index(holizon, valtical, stone) {
             for (i, h) in (holizon..=n_h).enumerate() {
                 self.masu.change(h, valtical + i, stone)
             }
