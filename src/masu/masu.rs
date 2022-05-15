@@ -1,29 +1,58 @@
 use std::fmt::Debug;
 
+use super::index::MasuIndex;
+
 #[derive(Debug, Clone, PartialEq, Eq)]
-pub struct Masu<T>(Vec<Vec<T>>)
+pub struct Masu<T>
 where
-    T: Debug + Clone + Copy + PartialEq + Eq;
+    T: Debug + Clone + Copy + PartialEq + Eq,
+{
+    masu: Vec<Vec<T>>,
+    h_len: usize,
+    v_len: usize,
+}
 
 impl<T> Masu<T>
 where
     T: Debug + Clone + Copy + PartialEq + Eq + Default,
 {
     pub fn new(h_len: usize, v_len: usize) -> Self {
-        Masu(vec![vec![T::default(); h_len]; v_len])
+        Masu {
+            h_len,
+            v_len,
+            masu: vec![vec![T::default(); h_len]; v_len],
+        }
     }
     pub fn all(&self) -> &Vec<Vec<T>> {
-        &self.0
+        &self.masu
     }
     pub fn change(&mut self, holizon: usize, valtical: usize, koma: T) {
-        self.0[valtical][holizon] = koma
+        self.masu[valtical][holizon] = koma
     }
     pub fn get(&self, holizon: usize, valtical: usize) -> T {
-        self.0[valtical][holizon]
+        self.masu[valtical][holizon]
+    }
+    pub fn is_edge(&self, holizon: usize, valtical: usize) -> bool {
+        valtical == (self.v_len - 1) || holizon == (self.h_len - 1) || holizon == 0 || valtical == 0
+    }
+    pub fn is_out_bound(&self, holizon: usize, valtical: usize) -> bool {
+        valtical >= self.v_len || holizon >= self.h_len
+    }
+    pub fn get_up(&self, holizon: usize, valtical: usize) -> Result<T, String> {
+        match MasuIndex::new(self.h_len, self.v_len, holizon, valtical).get_up() {
+            Ok(new_index) => Ok(self.get(new_index.get_h(), new_index.get_v())),
+            Err(e) => Err(e),
+        }
+    }
+    pub fn get_down(&self, holizon: usize, valtical: usize) -> Result<T, String> {
+        match MasuIndex::new(self.h_len, self.v_len, holizon, valtical).get_down() {
+            Ok(new_index) => Ok(self.get(new_index.get_h(), new_index.get_v())),
+            Err(e) => Err(e),
+        }
     }
     pub fn print(&self) {
         let mut log = String::new();
-        for v in &self.0 {
+        for v in &self.masu {
             //log = format!("{}\n{}\n", log, "--".repeat(self.0.len()));
             for h in v {
                 log = format!("{}|{:?}", log, h);
@@ -32,23 +61,6 @@ where
         }
         println!("{}", log);
     }
-    pub fn is_edge(&self, holizon: usize, valtical: usize) -> bool {
-        valtical == (self.0.len() - 1) || holizon == (self.0[0].len() - 1)
-    }
-    pub fn is_out_bound(&self, holizon: usize, valtical: usize) -> bool {
-        valtical >= self.0.len() || holizon >= self.0[0].len()
-    }
-    pub fn get_up(&self, holizon: usize, valtical: usize) -> Result<T, String> {
-        if valtical == 0 {
-            return Err(format!("[{},{}] up is out bound", holizon, valtical));
-        }
-        let new_h = holizon;
-        let new_v = valtical - 1;
-        if self.is_out_bound(new_h, new_v) {
-            return Err(format!("[{},{}] up is out bound", holizon, valtical));
-        }
-        Ok(self.get(new_h, new_v))
-    }
 }
 
 #[cfg(test)]
@@ -56,6 +68,23 @@ mod masu_test {
     use crate::osero::stone::OseroStone;
 
     use super::Masu;
+    #[test]
+    fn get_down_test() {
+        let mut masu: Masu<OseroStone> = Masu::new(8, 8);
+        masu.change(2, 2, OseroStone::Black);
+        masu.change(1, 1, OseroStone::White);
+        assert_eq!(masu.get_down(2, 1).unwrap(), OseroStone::Black);
+        assert_eq!(masu.get_down(1, 0).unwrap(), OseroStone::White);
+        assert_eq!(masu.get_down(4, 4).unwrap(), OseroStone::Empty);
+        assert_eq!(
+            masu.get_down(0, 7),
+            Err("[0,7] down is out bound".to_string())
+        );
+        assert_eq!(
+            masu.get_down(7, 7),
+            Err("[7,7] down is out bound".to_string())
+        );
+    }
     #[test]
     fn get_up_test() {
         let mut masu: Masu<OseroStone> = Masu::new(8, 8);
