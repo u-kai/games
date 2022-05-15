@@ -29,7 +29,17 @@ impl Osero {
         let is_left = self.challenge_left(holizon, valtical, stone);
         let is_up_right = self.challenge_up_right(holizon, valtical, stone);
         let is_down_right = self.challenge_down_right(holizon, valtical, stone);
-        if is_down || is_right || is_up || is_left || is_up_right || is_down_right {
+        let is_up_left = self.challenge_up_left(holizon, valtical, stone);
+        let is_down_left = self.challenge_down_left(holizon, valtical, stone);
+        if is_down
+            || is_right
+            || is_up
+            || is_left
+            || is_up_right
+            || is_down_right
+            || is_down_left
+            || is_up_left
+        {
             Ok(())
         } else {
             Err(format!("can not put [{},{}]", holizon, valtical))
@@ -40,6 +50,7 @@ impl Osero {
     }
     fn challenge_up(&mut self, holizon: usize, valtical: usize, stone: OseroStone) -> bool {
         if let Some(next_up_index) = self.up_next_v_index(holizon, valtical, stone) {
+            println!("challenge up {}", next_up_index);
             for v in next_up_index..=valtical {
                 self.masu.change(holizon, v, stone);
             }
@@ -50,6 +61,7 @@ impl Osero {
     }
     fn challenge_down(&mut self, holizon: usize, valtical: usize, stone: OseroStone) -> bool {
         if let Some(next_down_index) = self.down_next_v_index(holizon, valtical, stone) {
+            println!("challenge down {}", next_down_index);
             for v in valtical..=next_down_index {
                 self.masu.change(holizon, v, stone);
             }
@@ -60,6 +72,7 @@ impl Osero {
     }
     fn challenge_right(&mut self, holizon: usize, valtical: usize, stone: OseroStone) -> bool {
         if let Some(next_right_index) = self.right_next_h_index(holizon, valtical, stone) {
+            println!("challenge right {}", next_right_index);
             for h in holizon..=next_right_index {
                 self.masu.change(h, valtical, stone);
             }
@@ -70,6 +83,7 @@ impl Osero {
     }
     fn challenge_left(&mut self, holizon: usize, valtical: usize, stone: OseroStone) -> bool {
         if let Some(next_left_index) = self.left_next_h_index(holizon, valtical, stone) {
+            println!("challenge left {}", next_left_index);
             for h in next_left_index..=holizon {
                 self.masu.change(h, valtical, stone);
             }
@@ -80,8 +94,9 @@ impl Osero {
     }
     fn challenge_up_right(&mut self, holizon: usize, valtical: usize, stone: OseroStone) -> bool {
         if let Some((n_h, n_v)) = self.up_right_next_index(holizon, valtical, stone) {
+            println!("challenge up_right {},{}", n_h, n_v);
             for (i, h) in (holizon..=n_h).enumerate() {
-                self.masu.change(h, valtical + i, stone)
+                self.masu.change(h, valtical - i, stone)
             }
             true
         } else {
@@ -90,8 +105,32 @@ impl Osero {
     }
     fn challenge_down_right(&mut self, holizon: usize, valtical: usize, stone: OseroStone) -> bool {
         if let Some((n_h, n_v)) = self.down_right_next_index(holizon, valtical, stone) {
+            println!("challenge down_right {},{}", n_h, n_v);
             for (i, h) in (holizon..=n_h).enumerate() {
                 self.masu.change(h, valtical + i, stone)
+            }
+            true
+        } else {
+            false
+        }
+    }
+    fn challenge_up_left(&mut self, holizon: usize, valtical: usize, stone: OseroStone) -> bool {
+        if let Some((n_h, n_v)) = self.up_left_next_index(holizon, valtical, stone) {
+            println!("challenge up_left {},{}", n_h, n_v);
+            for (i, h) in (n_h..=holizon).enumerate() {
+                self.masu.change(h, n_v + i, stone)
+            }
+            true
+        } else {
+            false
+        }
+    }
+    fn challenge_down_left(&mut self, holizon: usize, valtical: usize, stone: OseroStone) -> bool {
+        if let Some((n_h, n_v)) = self.down_left_next_index(holizon, valtical, stone) {
+            println!("challenge down_left {},{}", n_h, n_v);
+            for (i, h) in (n_h..=holizon).enumerate() {
+                println!("{},{}", h, n_v + i);
+                self.masu.change(h, n_v - i, stone)
             }
             true
         } else {
@@ -128,6 +167,26 @@ impl Osero {
                         Some((holizon + 1, valtical - 1))
                     } else {
                         self.up_right_next_index(holizon + 1, valtical - 1, stone)
+                    }
+                }
+            },
+            Err(_) => None,
+        }
+    }
+    fn up_left_next_index(
+        &self,
+        holizon: usize,
+        valtical: usize,
+        stone: OseroStone,
+    ) -> Option<(usize, usize)> {
+        match self.masu.get_up_left(holizon, valtical) {
+            Ok(up_stone) => match up_stone {
+                OseroStone::Empty => None,
+                _ => {
+                    if up_stone == stone {
+                        Some((holizon - 1, valtical - 1))
+                    } else {
+                        self.up_left_next_index(holizon - 1, valtical - 1, stone)
                     }
                 }
             },
@@ -174,6 +233,26 @@ impl Osero {
             Err(_) => None,
         }
     }
+    fn down_left_next_index(
+        &self,
+        holizon: usize,
+        valtical: usize,
+        stone: OseroStone,
+    ) -> Option<(usize, usize)> {
+        match self.masu.get_down_left(holizon, valtical) {
+            Ok(up_stone) => match up_stone {
+                OseroStone::Empty => None,
+                _ => {
+                    if up_stone == stone {
+                        Some((holizon - 1, valtical + 1))
+                    } else {
+                        self.down_left_next_index(holizon - 1, valtical + 1, stone)
+                    }
+                }
+            },
+            Err(_) => None,
+        }
+    }
     fn right_next_h_index(
         &self,
         holizon: usize,
@@ -207,7 +286,6 @@ impl Osero {
                     if left_stone == stone {
                         Some(holizon - 1)
                     } else {
-                        println!("left is {:?} {},{}", stone, holizon, valtical,);
                         self.left_next_h_index(holizon - 1, valtical, stone)
                     }
                 }
@@ -245,5 +323,8 @@ mod osero_test {
         assert_eq!(osero.masu(4, 3), OseroStone::Black);
         osero.put(2, 2, OseroStone::White);
         assert_eq!(osero.masu(3, 3), OseroStone::White);
+        osero.put(5, 2, OseroStone::Black);
+        assert_eq!(osero.masu(4, 3), OseroStone::Black);
+        osero.print();
     }
 }
