@@ -18,9 +18,6 @@ impl MasuIndex {
             h_index,
         }
     }
-    pub fn create(&self, holizon: usize, valtical: usize) -> MasuIndex {
-        MasuIndex::new(self.h_len, self.v_len, holizon, valtical)
-    }
     pub fn get_v(&self) -> usize {
         self.v_index
     }
@@ -91,11 +88,14 @@ impl MasuIndex {
             Err(e) => Err(e),
         }
     }
-    fn is_down_edge(&self) -> bool {
-        self.v_index == (self.v_len - 1)
+    fn create(&self, holizon: usize, valtical: usize) -> MasuIndex {
+        MasuIndex::new(self.h_len, self.v_len, holizon, valtical)
     }
     fn is_up_edge(&self) -> bool {
         self.v_index == 0
+    }
+    fn is_down_edge(&self) -> bool {
+        self.v_index == (self.v_len - 1)
     }
     fn is_left_edge(&self) -> bool {
         self.h_index == 0

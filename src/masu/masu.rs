@@ -50,6 +50,31 @@ where
             Err(e) => Err(e),
         }
     }
+    pub fn get_up_left(&self, holizon: usize, valtical: usize) -> Result<T, String> {
+        match MasuIndex::new(self.h_len, self.v_len, holizon, valtical).get_up_left() {
+            Ok(new_index) => Ok(self.get(new_index.get_h(), new_index.get_v())),
+            Err(e) => Err(e),
+        }
+    }
+    pub fn get_down_left(&self, holizon: usize, valtical: usize) -> Result<T, String> {
+        match MasuIndex::new(self.h_len, self.v_len, holizon, valtical).get_down_left() {
+            Ok(new_index) => Ok(self.get(new_index.get_h(), new_index.get_v())),
+            Err(e) => Err(e),
+        }
+    }
+    pub fn get_up_right(&self, holizon: usize, valtical: usize) -> Result<T, String> {
+        match MasuIndex::new(self.h_len, self.v_len, holizon, valtical).get_up_right() {
+            Ok(new_index) => Ok(self.get(new_index.get_h(), new_index.get_v())),
+            Err(e) => Err(e),
+        }
+    }
+    pub fn get_down_right(&self, holizon: usize, valtical: usize) -> Result<T, String> {
+        match MasuIndex::new(self.h_len, self.v_len, holizon, valtical).get_down_right() {
+            Ok(new_index) => Ok(self.get(new_index.get_h(), new_index.get_v())),
+            Err(e) => Err(e),
+        }
+    }
+
     pub fn print(&self) {
         let mut log = String::new();
         for v in &self.masu {
@@ -68,6 +93,74 @@ mod masu_test {
     use crate::osero::stone::OseroStone;
 
     use super::Masu;
+    #[test]
+    fn get_down_right_test() {
+        let mut masu: Masu<OseroStone> = Masu::new(8, 8);
+        masu.change(2, 2, OseroStone::Black);
+        masu.change(1, 1, OseroStone::White);
+        assert_eq!(masu.get_down_right(1, 1).unwrap(), OseroStone::Black);
+        assert_eq!(masu.get_down_right(0, 0).unwrap(), OseroStone::White);
+        assert_eq!(masu.get_down_right(4, 4).unwrap(), OseroStone::Empty);
+        assert_eq!(
+            masu.get_down_right(0, 7),
+            Err("[0,7] down is out bound".to_string())
+        );
+        assert_eq!(
+            masu.get_down_right(7, 7),
+            Err("[7,7] down is out bound".to_string())
+        );
+    }
+    #[test]
+    fn get_up_right_test() {
+        let mut masu: Masu<OseroStone> = Masu::new(8, 8);
+        masu.change(2, 2, OseroStone::Black);
+        masu.change(1, 1, OseroStone::White);
+        assert_eq!(masu.get_up_right(1, 3).unwrap(), OseroStone::Black);
+        assert_eq!(masu.get_up_right(0, 2).unwrap(), OseroStone::White);
+        assert_eq!(masu.get_up_right(2, 1).unwrap(), OseroStone::Empty);
+        assert_eq!(
+            masu.get_up_right(0, 0),
+            Err("[0,0] up is out bound".to_string())
+        );
+        assert_eq!(
+            masu.get_up_right(7, 0),
+            Err("[7,0] up is out bound".to_string())
+        );
+    }
+    #[test]
+    fn get_down_left_test() {
+        let mut masu: Masu<OseroStone> = Masu::new(8, 8);
+        masu.change(2, 2, OseroStone::Black);
+        masu.change(1, 1, OseroStone::White);
+        assert_eq!(masu.get_down_left(3, 1).unwrap(), OseroStone::Black);
+        assert_eq!(masu.get_down_left(2, 0).unwrap(), OseroStone::White);
+        assert_eq!(masu.get_down_left(4, 4).unwrap(), OseroStone::Empty);
+        assert_eq!(
+            masu.get_down_left(0, 7),
+            Err("[0,7] down is out bound".to_string())
+        );
+        assert_eq!(
+            masu.get_down_left(7, 7),
+            Err("[7,7] down is out bound".to_string())
+        );
+    }
+    #[test]
+    fn get_up_left_test() {
+        let mut masu: Masu<OseroStone> = Masu::new(8, 8);
+        masu.change(2, 2, OseroStone::Black);
+        masu.change(1, 1, OseroStone::White);
+        assert_eq!(masu.get_up_left(3, 3).unwrap(), OseroStone::Black);
+        assert_eq!(masu.get_up_left(2, 2).unwrap(), OseroStone::White);
+        assert_eq!(masu.get_up_left(2, 1).unwrap(), OseroStone::Empty);
+        assert_eq!(
+            masu.get_up_left(0, 0),
+            Err("[0,0] up is out bound".to_string())
+        );
+        assert_eq!(
+            masu.get_up_left(7, 0),
+            Err("[7,0] up is out bound".to_string())
+        );
+    }
     #[test]
     fn get_down_test() {
         let mut masu: Masu<OseroStone> = Masu::new(8, 8);
