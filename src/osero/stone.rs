@@ -10,13 +10,13 @@ impl Debug for OseroStone {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         let d = self;
         match d {
-            OseroStone::White => {
+            OseroStone::Black => {
                 write!(f, "○")
             }
             OseroStone::Empty => {
                 write!(f, " ")
             }
-            OseroStone::Black => {
+            OseroStone::White => {
                 write!(f, "●")
             }
         }

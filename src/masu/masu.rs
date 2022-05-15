@@ -50,6 +50,18 @@ where
             Err(e) => Err(e),
         }
     }
+    pub fn get_right(&self, holizon: usize, valtical: usize) -> Result<T, String> {
+        match MasuIndex::new(self.h_len, self.v_len, holizon, valtical).get_right() {
+            Ok(new_index) => Ok(self.get(new_index.get_h(), new_index.get_v())),
+            Err(e) => Err(e),
+        }
+    }
+    pub fn get_left(&self, holizon: usize, valtical: usize) -> Result<T, String> {
+        match MasuIndex::new(self.h_len, self.v_len, holizon, valtical).get_left() {
+            Ok(new_index) => Ok(self.get(new_index.get_h(), new_index.get_v())),
+            Err(e) => Err(e),
+        }
+    }
     pub fn get_up_left(&self, holizon: usize, valtical: usize) -> Result<T, String> {
         match MasuIndex::new(self.h_len, self.v_len, holizon, valtical).get_up_left() {
             Ok(new_index) => Ok(self.get(new_index.get_h(), new_index.get_v())),
