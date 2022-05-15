@@ -1,5 +1,6 @@
 use osero::game::OseroCLI;
 
+mod gomoku_narabe;
 mod masu;
 mod osero;
 fn main() {
