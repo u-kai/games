@@ -46,13 +46,6 @@ impl OseroCLI {
             turn: player1,
         }
     }
-    pub fn switch_turn(&mut self) {
-        match self.turn.get_stone() {
-            OseroStone::Black => self.turn = self.player2,
-            OseroStone::White => self.turn = self.player1,
-            _ => panic!("not player is empty"),
-        }
-    }
     pub fn start(&mut self) {
         println!("START Osero!!!");
         self.board.print();
@@ -88,6 +81,13 @@ impl OseroCLI {
             "Drow".to_string()
         };
         println!("{}", message);
+    }
+    fn switch_turn(&mut self) {
+        match self.turn.get_stone() {
+            OseroStone::Black => self.turn = self.player2,
+            OseroStone::White => self.turn = self.player1,
+            _ => panic!("not player is empty"),
+        }
     }
     fn get_h_v(&self) -> (usize, usize) {
         let mut buf = String::new();
