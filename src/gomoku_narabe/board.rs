@@ -134,37 +134,37 @@ mod gomoku_test {
     #[test]
     fn winner_test() {
         let mut board = GomokuBoard::new();
-        board.put(0, 0, CorX::Circle);
-        board.put(0, 1, CorX::Circle);
-        board.put(0, 2, CorX::Circle);
+        board.put(0, 0, CorX::Circle).unwrap();
+        board.put(0, 1, CorX::Circle).unwrap();
+        board.put(0, 2, CorX::Circle).unwrap();
         assert_eq!(board.winner(), Some(CorX::Circle));
         let mut board = GomokuBoard::new();
-        board.put(0, 0, CorX::Circle);
-        board.put(1, 0, CorX::Circle);
-        board.put(2, 0, CorX::Circle);
+        board.put(0, 0, CorX::Circle).unwrap();
+        board.put(1, 0, CorX::Circle).unwrap();
+        board.put(2, 0, CorX::Circle).unwrap();
         assert_eq!(board.winner(), Some(CorX::Circle));
         let mut board = GomokuBoard::new();
-        board.put(0, 0, CorX::Circle);
-        board.put(1, 1, CorX::Circle);
-        board.put(2, 2, CorX::Circle);
+        board.put(0, 0, CorX::Circle).unwrap();
+        board.put(1, 1, CorX::Circle).unwrap();
+        board.put(2, 2, CorX::Circle).unwrap();
         assert_eq!(board.winner(), Some(CorX::Circle));
         let mut board = GomokuBoard::new();
-        board.put(2, 0, CorX::Circle);
-        board.put(1, 1, CorX::Circle);
-        board.put(0, 2, CorX::Circle);
+        board.put(2, 0, CorX::Circle).unwrap();
+        board.put(1, 1, CorX::Circle).unwrap();
+        board.put(0, 2, CorX::Circle).unwrap();
         assert_eq!(board.winner(), Some(CorX::Circle));
     }
     #[test]
     fn is_puttable() {
         let mut board = GomokuBoard::new();
-        board.put(0, 0, CorX::Circle);
+        board.put(0, 0, CorX::Circle).unwrap();
         assert_eq!(board.is_puttable(0, 0), false);
     }
 
     #[test]
     fn put_test() {
         let mut board = GomokuBoard::new();
-        board.put(0, 0, CorX::Circle);
+        board.put(0, 0, CorX::Circle).unwrap();
         assert_eq!(board.masu(0, 0), CorX::Circle)
     }
 }
