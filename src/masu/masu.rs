@@ -177,6 +177,21 @@ mod masu_test {
         }
     }
     #[test]
+    fn get_up_left_line_test() {
+        //          |Y| | | | |
+        //          | | | | | |
+        //          | | | | | |
+        //          | | | |N| |
+        //          | | | | | | <-Point
+        let mut masu: Masu<Mock> = Masu::new(5, 5);
+        masu.change(0, 0, Mock::Yes);
+        masu.change(3, 3, Mock::No);
+        assert_eq!(
+            masu.get_up_left_line(4, 4),
+            vec![Mock::No, Mock::Empty, Mock::Empty, Mock::Yes]
+        );
+    }
+    #[test]
     fn get_up_right_line_test() {
         //          | | | | |Y|
         //          | | | |N| |
