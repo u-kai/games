@@ -173,7 +173,6 @@ where
 
 #[cfg(test)]
 mod masu_test {
-    use crate::osero::stone::OseroStone;
 
     use super::Masu;
     #[derive(Clone, Copy, PartialEq, Eq, Debug)]
@@ -331,12 +330,12 @@ mod masu_test {
 
     #[test]
     fn get_down_right_test() {
-        let mut masu: Masu<OseroStone> = Masu::new(8, 8);
-        masu.change(2, 2, OseroStone::Black);
-        masu.change(1, 1, OseroStone::White);
-        assert_eq!(masu.get_down_right(1, 1).unwrap(), OseroStone::Black);
-        assert_eq!(masu.get_down_right(0, 0).unwrap(), OseroStone::White);
-        assert_eq!(masu.get_down_right(4, 4).unwrap(), OseroStone::Empty);
+        let mut masu: Masu<Mock> = Masu::new(8, 8);
+        masu.change(2, 2, Mock::No);
+        masu.change(1, 1, Mock::Yes);
+        assert_eq!(masu.get_down_right(1, 1).unwrap(), Mock::No);
+        assert_eq!(masu.get_down_right(0, 0).unwrap(), Mock::Yes);
+        assert_eq!(masu.get_down_right(4, 4).unwrap(), Mock::Empty);
         assert_eq!(
             masu.get_down_right(0, 7),
             Err("[0,7] down is out bound".to_string())
@@ -348,12 +347,12 @@ mod masu_test {
     }
     #[test]
     fn get_up_right_test() {
-        let mut masu: Masu<OseroStone> = Masu::new(8, 8);
-        masu.change(2, 2, OseroStone::Black);
-        masu.change(1, 1, OseroStone::White);
-        assert_eq!(masu.get_up_right(1, 3).unwrap(), OseroStone::Black);
-        assert_eq!(masu.get_up_right(0, 2).unwrap(), OseroStone::White);
-        assert_eq!(masu.get_up_right(2, 1).unwrap(), OseroStone::Empty);
+        let mut masu: Masu<Mock> = Masu::new(8, 8);
+        masu.change(2, 2, Mock::No);
+        masu.change(1, 1, Mock::Yes);
+        assert_eq!(masu.get_up_right(1, 3).unwrap(), Mock::No);
+        assert_eq!(masu.get_up_right(0, 2).unwrap(), Mock::Yes);
+        assert_eq!(masu.get_up_right(2, 1).unwrap(), Mock::Empty);
         assert_eq!(
             masu.get_up_right(0, 0),
             Err("[0,0] up is out bound".to_string())
@@ -365,12 +364,12 @@ mod masu_test {
     }
     #[test]
     fn get_down_left_test() {
-        let mut masu: Masu<OseroStone> = Masu::new(8, 8);
-        masu.change(2, 2, OseroStone::Black);
-        masu.change(1, 1, OseroStone::White);
-        assert_eq!(masu.get_down_left(3, 1).unwrap(), OseroStone::Black);
-        assert_eq!(masu.get_down_left(2, 0).unwrap(), OseroStone::White);
-        assert_eq!(masu.get_down_left(4, 4).unwrap(), OseroStone::Empty);
+        let mut masu: Masu<Mock> = Masu::new(8, 8);
+        masu.change(2, 2, Mock::No);
+        masu.change(1, 1, Mock::Yes);
+        assert_eq!(masu.get_down_left(3, 1).unwrap(), Mock::No);
+        assert_eq!(masu.get_down_left(2, 0).unwrap(), Mock::Yes);
+        assert_eq!(masu.get_down_left(4, 4).unwrap(), Mock::Empty);
         assert_eq!(
             masu.get_down_left(0, 7),
             Err("[0,7] down is out bound".to_string())
@@ -382,12 +381,12 @@ mod masu_test {
     }
     #[test]
     fn get_up_left_test() {
-        let mut masu: Masu<OseroStone> = Masu::new(8, 8);
-        masu.change(2, 2, OseroStone::Black);
-        masu.change(1, 1, OseroStone::White);
-        assert_eq!(masu.get_up_left(3, 3).unwrap(), OseroStone::Black);
-        assert_eq!(masu.get_up_left(2, 2).unwrap(), OseroStone::White);
-        assert_eq!(masu.get_up_left(2, 1).unwrap(), OseroStone::Empty);
+        let mut masu: Masu<Mock> = Masu::new(8, 8);
+        masu.change(2, 2, Mock::No);
+        masu.change(1, 1, Mock::Yes);
+        assert_eq!(masu.get_up_left(3, 3).unwrap(), Mock::No);
+        assert_eq!(masu.get_up_left(2, 2).unwrap(), Mock::Yes);
+        assert_eq!(masu.get_up_left(2, 1).unwrap(), Mock::Empty);
         assert_eq!(
             masu.get_up_left(0, 0),
             Err("[0,0] up is out bound".to_string())
@@ -399,12 +398,12 @@ mod masu_test {
     }
     #[test]
     fn get_down_test() {
-        let mut masu: Masu<OseroStone> = Masu::new(8, 8);
-        masu.change(2, 2, OseroStone::Black);
-        masu.change(1, 1, OseroStone::White);
-        assert_eq!(masu.get_down(2, 1).unwrap(), OseroStone::Black);
-        assert_eq!(masu.get_down(1, 0).unwrap(), OseroStone::White);
-        assert_eq!(masu.get_down(4, 4).unwrap(), OseroStone::Empty);
+        let mut masu: Masu<Mock> = Masu::new(8, 8);
+        masu.change(2, 2, Mock::No);
+        masu.change(1, 1, Mock::Yes);
+        assert_eq!(masu.get_down(2, 1).unwrap(), Mock::No);
+        assert_eq!(masu.get_down(1, 0).unwrap(), Mock::Yes);
+        assert_eq!(masu.get_down(4, 4).unwrap(), Mock::Empty);
         assert_eq!(
             masu.get_down(0, 7),
             Err("[0,7] down is out bound".to_string())
@@ -416,111 +415,111 @@ mod masu_test {
     }
     #[test]
     fn get_up_test() {
-        let mut masu: Masu<OseroStone> = Masu::new(8, 8);
-        masu.change(2, 2, OseroStone::Black);
-        masu.change(1, 1, OseroStone::White);
-        assert_eq!(masu.get_up(2, 3).unwrap(), OseroStone::Black);
-        assert_eq!(masu.get_up(1, 2).unwrap(), OseroStone::White);
-        assert_eq!(masu.get_up(2, 1).unwrap(), OseroStone::Empty);
+        let mut masu: Masu<Mock> = Masu::new(8, 8);
+        masu.change(2, 2, Mock::No);
+        masu.change(1, 1, Mock::Yes);
+        assert_eq!(masu.get_up(2, 3).unwrap(), Mock::No);
+        assert_eq!(masu.get_up(1, 2).unwrap(), Mock::Yes);
+        assert_eq!(masu.get_up(2, 1).unwrap(), Mock::Empty);
         assert_eq!(masu.get_up(0, 0), Err("[0,0] up is out bound".to_string()));
         assert_eq!(masu.get_up(7, 0), Err("[7,0] up is out bound".to_string()));
     }
     #[test]
     fn change_test() {
-        let mut masu: Masu<OseroStone> = Masu::new(8, 8);
-        masu.change(3, 5, OseroStone::White);
-        assert_eq!(masu.get(3, 5), OseroStone::White);
+        let mut masu: Masu<Mock> = Masu::new(8, 8);
+        masu.change(3, 5, Mock::Yes);
+        assert_eq!(masu.get(3, 5), Mock::Yes);
     }
 
     #[test]
     fn new_test() {
-        impl Masu<OseroStone> {
-            pub fn all(&self) -> &Vec<Vec<OseroStone>> {
+        impl Masu<Mock> {
+            pub fn all(&self) -> &Vec<Vec<Mock>> {
                 &self.masu
             }
         }
-        let masu: Masu<OseroStone> = Masu::new(8, 8);
+        let masu: Masu<Mock> = Masu::new(8, 8);
         assert_eq!(
             &vec![
                 vec![
-                    OseroStone::Empty,
-                    OseroStone::Empty,
-                    OseroStone::Empty,
-                    OseroStone::Empty,
-                    OseroStone::Empty,
-                    OseroStone::Empty,
-                    OseroStone::Empty,
-                    OseroStone::Empty
+                    Mock::Empty,
+                    Mock::Empty,
+                    Mock::Empty,
+                    Mock::Empty,
+                    Mock::Empty,
+                    Mock::Empty,
+                    Mock::Empty,
+                    Mock::Empty
                 ],
                 vec![
-                    OseroStone::Empty,
-                    OseroStone::Empty,
-                    OseroStone::Empty,
-                    OseroStone::Empty,
-                    OseroStone::Empty,
-                    OseroStone::Empty,
-                    OseroStone::Empty,
-                    OseroStone::Empty
+                    Mock::Empty,
+                    Mock::Empty,
+                    Mock::Empty,
+                    Mock::Empty,
+                    Mock::Empty,
+                    Mock::Empty,
+                    Mock::Empty,
+                    Mock::Empty
                 ],
                 vec![
-                    OseroStone::Empty,
-                    OseroStone::Empty,
-                    OseroStone::Empty,
-                    OseroStone::Empty,
-                    OseroStone::Empty,
-                    OseroStone::Empty,
-                    OseroStone::Empty,
-                    OseroStone::Empty
+                    Mock::Empty,
+                    Mock::Empty,
+                    Mock::Empty,
+                    Mock::Empty,
+                    Mock::Empty,
+                    Mock::Empty,
+                    Mock::Empty,
+                    Mock::Empty
                 ],
                 vec![
-                    OseroStone::Empty,
-                    OseroStone::Empty,
-                    OseroStone::Empty,
-                    OseroStone::Empty,
-                    OseroStone::Empty,
-                    OseroStone::Empty,
-                    OseroStone::Empty,
-                    OseroStone::Empty
+                    Mock::Empty,
+                    Mock::Empty,
+                    Mock::Empty,
+                    Mock::Empty,
+                    Mock::Empty,
+                    Mock::Empty,
+                    Mock::Empty,
+                    Mock::Empty
                 ],
                 vec![
-                    OseroStone::Empty,
-                    OseroStone::Empty,
-                    OseroStone::Empty,
-                    OseroStone::Empty,
-                    OseroStone::Empty,
-                    OseroStone::Empty,
-                    OseroStone::Empty,
-                    OseroStone::Empty
+                    Mock::Empty,
+                    Mock::Empty,
+                    Mock::Empty,
+                    Mock::Empty,
+                    Mock::Empty,
+                    Mock::Empty,
+                    Mock::Empty,
+                    Mock::Empty
                 ],
                 vec![
-                    OseroStone::Empty,
-                    OseroStone::Empty,
-                    OseroStone::Empty,
-                    OseroStone::Empty,
-                    OseroStone::Empty,
-                    OseroStone::Empty,
-                    OseroStone::Empty,
-                    OseroStone::Empty
+                    Mock::Empty,
+                    Mock::Empty,
+                    Mock::Empty,
+                    Mock::Empty,
+                    Mock::Empty,
+                    Mock::Empty,
+                    Mock::Empty,
+                    Mock::Empty
                 ],
                 vec![
-                    OseroStone::Empty,
-                    OseroStone::Empty,
-                    OseroStone::Empty,
-                    OseroStone::Empty,
-                    OseroStone::Empty,
-                    OseroStone::Empty,
-                    OseroStone::Empty,
-                    OseroStone::Empty
+                    Mock::Empty,
+                    Mock::Empty,
+                    Mock::Empty,
+                    Mock::Empty,
+                    Mock::Empty,
+                    Mock::Empty,
+                    Mock::Empty,
+                    Mock::Empty
                 ],
                 vec![
-                    OseroStone::Empty,
-                    OseroStone::Empty,
-                    OseroStone::Empty,
-                    OseroStone::Empty,
-                    OseroStone::Empty,
-                    OseroStone::Empty,
-                    OseroStone::Empty,
-                    OseroStone::Empty
+                    Mock::Empty,
+                    Mock::Empty,
+                    Mock::Empty,
+                    Mock::Empty,
+                    Mock::Empty,
+                    Mock::Empty,
+                    Mock::Empty,
+                    Mock::Empty
                 ],
             ],
             masu.all()
