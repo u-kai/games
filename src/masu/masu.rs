@@ -1,4 +1,4 @@
-use std::{collections::btree_map::Values, fmt::Debug};
+use std::fmt::Debug;
 
 use super::index::MasuIndex;
 
@@ -22,6 +22,15 @@ where
             v_len,
             masu: vec![vec![T::default(); h_len]; v_len],
         }
+    }
+    pub fn get_left_line(&self, holizon: usize, valtical: usize) -> Vec<T> {
+        let mut holizon = holizon;
+        let mut result = Vec::new();
+        while self.get_left(holizon, valtical).is_ok() {
+            result.push(self.get_left(holizon, valtical).unwrap());
+            holizon -= 1;
+        }
+        result
     }
     pub fn get_right_line(&self, holizon: usize, valtical: usize) -> Vec<T> {
         let mut holizon = holizon;
@@ -133,6 +142,22 @@ mod masu_test {
         fn default() -> Self {
             Mock::Empty
         }
+    }
+    #[test]
+    fn get_left_line_test() {
+        //          |Y| | |N|Y|<-Point
+        //          | | | | | |
+        //          | | | | | |
+        //          | | | | | |
+        //          | | | | | |
+        let mut masu: Masu<Mock> = Masu::new(5, 5);
+        masu.change(0, 0, Mock::Yes);
+        masu.change(3, 0, Mock::No);
+        masu.change(4, 0, Mock::Yes);
+        assert_eq!(
+            masu.get_left_line(4, 0),
+            vec![Mock::No, Mock::Empty, Mock::Empty, Mock::Yes,]
+        );
     }
     #[test]
     fn get_right_line_test() {
