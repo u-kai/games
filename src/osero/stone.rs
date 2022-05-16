@@ -14,6 +14,9 @@ impl OseroStone {
             OseroStone::Empty => "EMPTY",
         }
     }
+    pub fn change(&mut self, stone: OseroStone) {
+        *self = stone
+    }
 }
 impl Debug for OseroStone {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {

@@ -23,6 +23,9 @@ where
             masu: vec![vec![T::default(); h_len]; v_len],
         }
     }
+    pub fn all(&self) -> &Vec<Vec<T>> {
+        &self.masu
+    }
     pub fn get_down_right_line(&self, holizon: usize, valtical: usize) -> Vec<T> {
         let mut holizon = holizon;
         let mut valtical = valtical;
@@ -433,11 +436,6 @@ mod masu_test {
 
     #[test]
     fn new_test() {
-        impl Masu<Mock> {
-            pub fn all(&self) -> &Vec<Vec<Mock>> {
-                &self.masu
-            }
-        }
         let masu: Masu<Mock> = Masu::new(8, 8);
         assert_eq!(
             &vec![

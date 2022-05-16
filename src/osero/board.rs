@@ -5,9 +5,12 @@ pub struct OseroBoard {
     masu: Masu<OseroStone>,
 }
 
+const H_LEN: usize = 8;
+const V_LEN: usize = 8;
+
 impl OseroBoard {
     pub fn new_game() -> OseroBoard {
-        let mut masu = Masu::new(8, 8);
+        let mut masu = Masu::new(H_LEN, V_LEN);
         masu.change(3, 3, OseroStone::White);
         masu.change(3, 4, OseroStone::Black);
         masu.change(4, 3, OseroStone::Black);
@@ -18,37 +21,25 @@ impl OseroBoard {
         self.masu.get(holizon, valtical)
     }
     pub fn get_black_num(&self) -> usize {
-        let mut num = 0;
-        for i in 0..8 {
-            for j in 0..8 {
-                if self.masu(i, j) == OseroStone::Black {
-                    num += 1
-                }
-            }
-        }
-        num
+        self.get_stone_num(OseroStone::Black)
     }
     pub fn get_white_num(&self) -> usize {
-        let mut num = 0;
-        for i in 0..8 {
-            for j in 0..8 {
-                if self.masu(i, j) == OseroStone::White {
-                    num += 1
-                }
-            }
-        }
-        num
+        self.get_stone_num(OseroStone::White)
+    }
+    fn get_stone_num(&self, color: OseroStone) -> usize {
+        self.masu
+            .all()
+            .iter()
+            .flatten()
+            .filter(|stone| stone == &&color)
+            .count()
     }
     pub fn is_fill(&self) -> bool {
-        for i in 0..8 {
-            for j in 0..8 {
-                match self.masu(i, j) {
-                    OseroStone::Empty => return false,
-                    _ => continue,
-                }
-            }
-        }
-        true
+        self.masu
+            .all()
+            .iter()
+            .flatten()
+            .all(|stone| stone != &OseroStone::Empty)
     }
     pub fn is_pass(&self, stone: OseroStone) -> bool {
         for i in 0..8 {
@@ -156,6 +147,15 @@ impl OseroBoard {
         }
     }
     fn change_up(&mut self, holizon: usize, valtical: usize, stone: OseroStone) {
+        //let _ = self
+        //.masu
+        //.get_up_line(holizon, valtical)
+        //.iter_mut()
+        //.take_while(|s| s != &&OseroStone::Empty || s != &&stone)
+        //.for_each(|s| {
+        //s.change(stone);
+        //});
+        //self.masu.print()
         if let Some(next_up_index) = self.up_next_v_index(holizon, valtical, stone) {
             for v in next_up_index..=valtical {
                 self.masu.change(holizon, v, stone);
