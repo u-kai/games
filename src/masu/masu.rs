@@ -1,4 +1,4 @@
-use std::fmt::Debug;
+use std::{collections::btree_map::Values, fmt::Debug};
 
 use super::index::MasuIndex;
 
@@ -23,7 +23,16 @@ where
             masu: vec![vec![T::default(); h_len]; v_len],
         }
     }
-
+    pub fn get_up_line(&self, holizon: usize, valtical: usize) -> Vec<T> {
+        let mut valtical = valtical;
+        let mut result = Vec::new();
+        while valtical > 0 {
+            result.push(self.get_up(holizon, valtical).unwrap());
+            valtical -= 1;
+            println!("{}", valtical);
+        }
+        result
+    }
     pub fn change(&mut self, holizon: usize, valtical: usize, koma: T) {
         self.masu[valtical][holizon] = koma
     }
@@ -97,6 +106,47 @@ mod masu_test {
     use crate::osero::stone::OseroStone;
 
     use super::Masu;
+    #[derive(Clone, Copy, PartialEq, Eq, Debug)]
+    enum Mock {
+        Empty,
+        Yes,
+        No,
+    }
+    impl Default for Mock {
+        fn default() -> Self {
+            Mock::Empty
+        }
+    }
+    #[test]
+    fn get_up_line_test() {
+        //          |Y| | | | |
+        //          |N| | | | |
+        //          |Y| | | | |
+        // Point->  |N| | | | |
+        //          | | | | | |
+        let mut masu: Masu<Mock> = Masu::new(5, 5);
+        masu.change(0, 0, Mock::Yes);
+        masu.change(0, 1, Mock::No);
+        masu.change(0, 2, Mock::Yes);
+        masu.change(0, 3, Mock::No);
+        assert_eq!(masu.get_up_line(0, 3), vec![Mock::Yes, Mock::No, Mock::Yes]);
+
+        //          |Y| | | | |
+        //          |N| | | | |
+        //          | | | | | |
+        //          |N| | | | |
+        // Point->  | | | | | |
+        let mut masu: Masu<Mock> = Masu::new(5, 5);
+        masu.change(0, 0, Mock::Yes);
+        masu.change(0, 1, Mock::No);
+        masu.change(0, 2, Mock::Empty);
+        masu.change(0, 3, Mock::No);
+        assert_eq!(
+            masu.get_up_line(0, 4),
+            vec![Mock::No, Mock::Empty, Mock::No, Mock::Yes]
+        )
+    }
+
     #[test]
     fn get_down_right_test() {
         let mut masu: Masu<OseroStone> = Masu::new(8, 8);
