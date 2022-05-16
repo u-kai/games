@@ -23,6 +23,17 @@ where
             masu: vec![vec![T::default(); h_len]; v_len],
         }
     }
+    pub fn get_down_right_line(&self, holizon: usize, valtical: usize) -> Vec<T> {
+        let mut holizon = holizon;
+        let mut valtical = valtical;
+        let mut result = Vec::new();
+        while self.get_down_right(holizon, valtical).is_ok() {
+            result.push(self.get_down_right(holizon, valtical).unwrap());
+            holizon += 1;
+            valtical += 1;
+        }
+        result
+    }
     pub fn get_up_right_line(&self, holizon: usize, valtical: usize) -> Vec<T> {
         let mut holizon = holizon;
         let mut valtical = valtical;
@@ -175,6 +186,22 @@ mod masu_test {
         fn default() -> Self {
             Mock::Empty
         }
+    }
+    #[test]
+    fn get_down_right_line_test() {
+        // Point -> |Y| | | | |
+        //          | | | | | |
+        //          | | | | | |
+        //          | | | |N| |
+        //          | | | | |Y|
+        let mut masu: Masu<Mock> = Masu::new(5, 5);
+        masu.change(0, 0, Mock::Yes);
+        masu.change(3, 3, Mock::No);
+        masu.change(4, 4, Mock::Yes);
+        assert_eq!(
+            masu.get_down_right_line(0, 0),
+            vec![Mock::Empty, Mock::Empty, Mock::No, Mock::Yes]
+        );
     }
     #[test]
     fn get_up_left_line_test() {
