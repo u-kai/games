@@ -1,8 +1,8 @@
-use crate::masu::masu::Masu;
+use crate::masu::masu::MasuBoard;
 
 use super::stone::OseroStone;
 pub struct OseroBoard {
-    masu: Masu<OseroStone>,
+    masu: MasuBoard<OseroStone>,
 }
 
 const H_LEN: usize = 8;
@@ -10,7 +10,7 @@ const V_LEN: usize = 8;
 
 impl OseroBoard {
     pub fn new_game() -> OseroBoard {
-        let mut masu = Masu::new(H_LEN, V_LEN);
+        let mut masu = MasuBoard::new(H_LEN, V_LEN);
         masu.change(3, 3, OseroStone::White);
         masu.change(3, 4, OseroStone::Black);
         masu.change(4, 3, OseroStone::Black);
@@ -73,6 +73,7 @@ impl OseroBoard {
         stone: OseroStone,
     ) -> Result<(), String> {
         if self.is_puttable(holizon, valtical, stone) {
+            self.masu.change(holizon, valtical, stone);
             self.change_up(holizon, valtical, stone);
             self.change_down(holizon, valtical, stone);
             self.change_right(holizon, valtical, stone);
@@ -147,15 +148,6 @@ impl OseroBoard {
         }
     }
     fn change_up(&mut self, holizon: usize, valtical: usize, stone: OseroStone) {
-        //let _ = self
-        //.masu
-        //.get_up_line(holizon, valtical)
-        //.iter_mut()
-        //.take_while(|s| s != &&OseroStone::Empty || s != &&stone)
-        //.for_each(|s| {
-        //s.change(stone);
-        //});
-        //self.masu.print()
         if let Some(next_up_index) = self.up_next_v_index(holizon, valtical, stone) {
             for v in next_up_index..=valtical {
                 self.masu.change(holizon, v, stone);
@@ -372,7 +364,7 @@ impl OseroBoard {
 #[cfg(test)]
 mod osero_test {
 
-    use crate::{masu::masu::Masu, osero::stone::OseroStone};
+    use crate::{masu::masu::MasuBoard, osero::stone::OseroStone};
 
     use super::OseroBoard;
 
@@ -411,15 +403,25 @@ mod osero_test {
         //
         let mut osero = OseroBoard::new_game();
         osero.put(5, 4, OseroStone::Black).unwrap();
+        osero.print();
         osero.put(5, 5, OseroStone::White).unwrap();
+        osero.print();
         osero.put(4, 5, OseroStone::Black).unwrap();
+        osero.print();
         osero.put(5, 3, OseroStone::White).unwrap();
+        osero.print();
         osero.put(4, 2, OseroStone::Black).unwrap();
+        osero.print();
         osero.put(3, 1, OseroStone::White).unwrap();
+        osero.print();
         osero.put(3, 2, OseroStone::Black).unwrap();
+        osero.print();
         osero.put(3, 5, OseroStone::White).unwrap();
+        osero.print();
         osero.put(2, 3, OseroStone::Black).unwrap();
+        osero.print();
         osero.put(1, 3, OseroStone::White).unwrap();
+        osero.print();
         assert_eq!(osero.get_black_num(), 0);
         assert_eq!(osero.get_white_num(), 14);
     }
@@ -430,7 +432,7 @@ mod osero_test {
         assert_eq!(osero.is_pass(OseroStone::Black), false);
         impl OseroBoard {
             pub fn almost_fill() -> Self {
-                let mut masu: Masu<OseroStone> = Masu::new(8, 8);
+                let mut masu: MasuBoard<OseroStone> = MasuBoard::new(8, 8);
                 for i in 0..7 {
                     for j in 0..8 {
                         masu.change(i, j, OseroStone::Black)
@@ -456,7 +458,7 @@ mod osero_test {
     fn is_fill_test() {
         impl OseroBoard {
             pub fn fill() -> Self {
-                let mut masu: Masu<OseroStone> = Masu::new(8, 8);
+                let mut masu: MasuBoard<OseroStone> = MasuBoard::new(8, 8);
                 for i in 0..8 {
                     for j in 0..8 {
                         masu.change(i, j, OseroStone::Black)

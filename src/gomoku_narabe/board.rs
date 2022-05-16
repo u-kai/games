@@ -1,13 +1,13 @@
-use crate::masu::masu::Masu;
+use crate::masu::masu::MasuBoard;
 
 use super::c_or_x::CorX;
 
 pub struct GomokuBoard {
-    masu: Masu<CorX>,
+    masu: MasuBoard<CorX>,
 }
 impl GomokuBoard {
     pub fn new() -> Self {
-        let masu: Masu<CorX> = Masu::new(3, 3);
+        let masu: MasuBoard<CorX> = MasuBoard::new(3, 3);
 
         GomokuBoard { masu }
     }

@@ -1,9 +1,8 @@
 use std::fmt::Debug;
 
 use super::index::MasuIndex;
-
 #[derive(Debug, Clone, PartialEq, Eq)]
-pub struct Masu<T>
+pub struct MasuBoard<T>
 where
     T: Debug + Clone + Copy + PartialEq + Eq,
 {
@@ -12,12 +11,12 @@ where
     v_len: usize,
 }
 
-impl<T> Masu<T>
+impl<T> MasuBoard<T>
 where
     T: Debug + Clone + Copy + PartialEq + Eq + Default,
 {
     pub fn new(h_len: usize, v_len: usize) -> Self {
-        Masu {
+        MasuBoard {
             h_len,
             v_len,
             masu: vec![vec![T::default(); h_len]; v_len],
@@ -177,7 +176,7 @@ where
 #[cfg(test)]
 mod masu_test {
 
-    use super::Masu;
+    use super::MasuBoard;
     #[derive(Clone, Copy, PartialEq, Eq, Debug)]
     enum Mock {
         Empty,
@@ -196,7 +195,7 @@ mod masu_test {
         //          | | | | | |
         //          | | | |N| |
         //          | | | | |Y|
-        let mut masu: Masu<Mock> = Masu::new(5, 5);
+        let mut masu: MasuBoard<Mock> = MasuBoard::new(5, 5);
         masu.change(0, 0, Mock::Yes);
         masu.change(3, 3, Mock::No);
         masu.change(4, 4, Mock::Yes);
@@ -212,7 +211,7 @@ mod masu_test {
         //          | | | | | |
         //          | | | |N| |
         //          | | | | | | <-Point
-        let mut masu: Masu<Mock> = Masu::new(5, 5);
+        let mut masu: MasuBoard<Mock> = MasuBoard::new(5, 5);
         masu.change(0, 0, Mock::Yes);
         masu.change(3, 3, Mock::No);
         assert_eq!(
@@ -227,7 +226,7 @@ mod masu_test {
         //          | | | | | |
         //          | |Y| | | |
         //  Point-> | | | | | |
-        let mut masu: Masu<Mock> = Masu::new(5, 5);
+        let mut masu: MasuBoard<Mock> = MasuBoard::new(5, 5);
         masu.change(4, 0, Mock::Yes);
         masu.change(3, 1, Mock::No);
         masu.change(1, 3, Mock::Yes);
@@ -243,7 +242,7 @@ mod masu_test {
         //          | | | | | |
         //          | |Y| | | |
         //          | | | | | |
-        let mut masu: Masu<Mock> = Masu::new(5, 5);
+        let mut masu: MasuBoard<Mock> = MasuBoard::new(5, 5);
         masu.change(4, 0, Mock::Yes);
         masu.change(3, 1, Mock::No);
         masu.change(1, 3, Mock::Yes);
@@ -259,7 +258,7 @@ mod masu_test {
         //          | | | | | |
         //          | | | | | |
         //          | | | | | |
-        let mut masu: Masu<Mock> = Masu::new(5, 5);
+        let mut masu: MasuBoard<Mock> = MasuBoard::new(5, 5);
         masu.change(0, 0, Mock::Yes);
         masu.change(3, 0, Mock::No);
         masu.change(4, 0, Mock::Yes);
@@ -275,7 +274,7 @@ mod masu_test {
         //          | | | | | |
         //          | | | | | |
         //          | | | | | |
-        let mut masu: Masu<Mock> = Masu::new(5, 5);
+        let mut masu: MasuBoard<Mock> = MasuBoard::new(5, 5);
         masu.change(0, 0, Mock::Yes);
         masu.change(3, 0, Mock::No);
         masu.change(4, 0, Mock::Yes);
@@ -291,7 +290,7 @@ mod masu_test {
         //          |Y| | | | |
         //          |N| | | | |
         //          | | | | | |
-        let mut masu: Masu<Mock> = Masu::new(5, 5);
+        let mut masu: MasuBoard<Mock> = MasuBoard::new(5, 5);
         masu.change(0, 0, Mock::Yes);
         masu.change(0, 1, Mock::No);
         masu.change(0, 2, Mock::Yes);
@@ -308,7 +307,7 @@ mod masu_test {
         //          |Y| | | | |
         // Point->  |N| | | | |
         //          | | | | | |
-        let mut masu: Masu<Mock> = Masu::new(5, 5);
+        let mut masu: MasuBoard<Mock> = MasuBoard::new(5, 5);
         masu.change(0, 0, Mock::Yes);
         masu.change(0, 1, Mock::No);
         masu.change(0, 2, Mock::Yes);
@@ -320,7 +319,7 @@ mod masu_test {
         //          | | | | | |
         //          |N| | | | |
         // Point->  | | | | | |
-        let mut masu: Masu<Mock> = Masu::new(5, 5);
+        let mut masu: MasuBoard<Mock> = MasuBoard::new(5, 5);
         masu.change(0, 0, Mock::Yes);
         masu.change(0, 1, Mock::No);
         masu.change(0, 2, Mock::Empty);
@@ -333,7 +332,7 @@ mod masu_test {
 
     #[test]
     fn get_down_right_test() {
-        let mut masu: Masu<Mock> = Masu::new(8, 8);
+        let mut masu: MasuBoard<Mock> = MasuBoard::new(8, 8);
         masu.change(2, 2, Mock::No);
         masu.change(1, 1, Mock::Yes);
         assert_eq!(masu.get_down_right(1, 1).unwrap(), Mock::No);
@@ -350,7 +349,7 @@ mod masu_test {
     }
     #[test]
     fn get_up_right_test() {
-        let mut masu: Masu<Mock> = Masu::new(8, 8);
+        let mut masu: MasuBoard<Mock> = MasuBoard::new(8, 8);
         masu.change(2, 2, Mock::No);
         masu.change(1, 1, Mock::Yes);
         assert_eq!(masu.get_up_right(1, 3).unwrap(), Mock::No);
@@ -367,7 +366,7 @@ mod masu_test {
     }
     #[test]
     fn get_down_left_test() {
-        let mut masu: Masu<Mock> = Masu::new(8, 8);
+        let mut masu: MasuBoard<Mock> = MasuBoard::new(8, 8);
         masu.change(2, 2, Mock::No);
         masu.change(1, 1, Mock::Yes);
         assert_eq!(masu.get_down_left(3, 1).unwrap(), Mock::No);
@@ -384,7 +383,7 @@ mod masu_test {
     }
     #[test]
     fn get_up_left_test() {
-        let mut masu: Masu<Mock> = Masu::new(8, 8);
+        let mut masu: MasuBoard<Mock> = MasuBoard::new(8, 8);
         masu.change(2, 2, Mock::No);
         masu.change(1, 1, Mock::Yes);
         assert_eq!(masu.get_up_left(3, 3).unwrap(), Mock::No);
@@ -401,7 +400,7 @@ mod masu_test {
     }
     #[test]
     fn get_down_test() {
-        let mut masu: Masu<Mock> = Masu::new(8, 8);
+        let mut masu: MasuBoard<Mock> = MasuBoard::new(8, 8);
         masu.change(2, 2, Mock::No);
         masu.change(1, 1, Mock::Yes);
         assert_eq!(masu.get_down(2, 1).unwrap(), Mock::No);
@@ -418,7 +417,7 @@ mod masu_test {
     }
     #[test]
     fn get_up_test() {
-        let mut masu: Masu<Mock> = Masu::new(8, 8);
+        let mut masu: MasuBoard<Mock> = MasuBoard::new(8, 8);
         masu.change(2, 2, Mock::No);
         masu.change(1, 1, Mock::Yes);
         assert_eq!(masu.get_up(2, 3).unwrap(), Mock::No);
@@ -429,14 +428,14 @@ mod masu_test {
     }
     #[test]
     fn change_test() {
-        let mut masu: Masu<Mock> = Masu::new(8, 8);
+        let mut masu: MasuBoard<Mock> = MasuBoard::new(8, 8);
         masu.change(3, 5, Mock::Yes);
         assert_eq!(masu.get(3, 5), Mock::Yes);
     }
 
     #[test]
     fn new_test() {
-        let masu: Masu<Mock> = Masu::new(8, 8);
+        let masu: MasuBoard<Mock> = MasuBoard::new(8, 8);
         assert_eq!(
             &vec![
                 vec![
