@@ -1,4 +1,4 @@
-use crate::masu::masu::MasuBoard;
+use crate::masu::board::MasuBoard;
 
 use super::c_or_x::CorX;
 
