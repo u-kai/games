@@ -25,86 +25,102 @@ where
     pub fn all(&self) -> &Vec<Vec<T>> {
         &self.masu
     }
-    ///pub fn get_down_right_line(&self, holizon: usize, valtical: usize) -> Vec<T> {
-    ///let mut holizon = holizon;
-    ///let mut valtical = valtical;
-    ///let mut result = Vec::new();
-    ///while self.get_down_right(holizon, valtical).is_ok() {
-    ///result.push(self.get_down_right(holizon, valtical).unwrap());
-    ///holizon += 1;
-    ///valtical += 1;
-    ///}
-    ///result
-    ///}
-    //pub fn get_up_right_line(&self, holizon: usize, valtical: usize) -> Vec<T> {
-    //let mut holizon = holizon;
-    //let mut valtical = valtical;
-    //let mut result = Vec::new();
-    //while self.get_up_right(holizon, valtical).is_ok() {
-    //result.push(self.get_up_right(holizon, valtical).unwrap());
-    //holizon += 1;
-    //valtical -= 1;
-    //}
-    //result
-    //}
-    //pub fn get_up_left_line(&self, holizon: usize, valtical: usize) -> Vec<T> {
-    //let mut holizon = holizon;
-    //let mut valtical = valtical;
-    //let mut result = Vec::new();
-    //while self.get_up_left(holizon, valtical).is_ok() {
-    //result.push(self.get_up_left(holizon, valtical).unwrap());
-    //holizon -= 1;
-    //valtical -= 1;
-    //}
-    //result
-    //}
-    //pub fn get_down_left_line(&self, holizon: usize, valtical: usize) -> Vec<T> {
-    //let mut holizon = holizon;
-    //let mut valtical = valtical;
-    //let mut result = Vec::new();
-    //while self.get_down_left(holizon, valtical).is_ok() {
-    //result.push(self.get_down_left(holizon, valtical).unwrap());
-    //holizon -= 1;
-    //valtical += 1;
-    //}
-    //result
-    //}
-    //pub fn get_left_line(&self, holizon: usize, valtical: usize) -> Vec<T> {
-    //let mut holizon = holizon;
-    //let mut result = Vec::new();
-    //while self.get_left(holizon, valtical).is_ok() {
-    //result.push(self.get_left(holizon, valtical).unwrap());
-    //holizon -= 1;
-    //}
-    //result
-    //}
-    //pub fn get_right_line(&self, holizon: usize, valtical: usize) -> Vec<T> {
-    //let mut holizon = holizon;
-    //let mut result = Vec::new();
-    //while self.get_right(holizon, valtical).is_ok() {
-    //result.push(self.get_right(holizon, valtical).unwrap());
-    //holizon += 1;
-    //}
-    //result
-    //}
-    //pub fn get_down_line(&self, holizon: usize, valtical: usize) -> Vec<T> {
-    //let mut valtical = valtical;
-    //let mut result = Vec::new();
-    //while self.get_down(holizon, valtical).is_ok() {
-    //result.push(self.get_down(holizon, valtical).unwrap());
-    //valtical += 1;
-    //}
-    //result
-    //}
-    //pub fn get_up_line(&self, holizon: usize, valtical: usize) -> Vec<T> {
-    //let mut valtical = valtical;
-    //let mut result = Vec::new();
-    //while self.get_up(holizon, valtical).is_ok() {
-    //result.push(self.get_up(holizon, valtical).unwrap());
-    //valtical -= 1;
-    //}
-    //result
-    //}
+    pub fn get_down_right_line(&self, holizon: usize, valtical: usize) -> Vec<Masu<T>> {
+        let mut holizon = holizon;
+        let mut valtical = valtical;
+        let mut result = Vec::new();
+        while self.get_down_right(holizon, valtical).is_ok() {
+            let masu = self.get_down_right(holizon, valtical).unwrap();
+            holizon = masu.get_h_index();
+            valtical = masu.get_v_index();
+            result.push(masu);
+        }
+        result
+    }
+    pub fn get_up_right_line(&self, holizon: usize, valtical: usize) -> Vec<Masu<T>> {
+        let mut holizon = holizon;
+        let mut valtical = valtical;
+        let mut result = Vec::new();
+        while self.get_up_right(holizon, valtical).is_ok() {
+            let masu = self.get_up_right(holizon, valtical).unwrap();
+            holizon = masu.get_h_index();
+            valtical = masu.get_v_index();
+            result.push(masu);
+        }
+        result
+    }
+    pub fn get_up_left_line(&self, holizon: usize, valtical: usize) -> Vec<Masu<T>> {
+        let mut holizon = holizon;
+        let mut valtical = valtical;
+        let mut result = Vec::new();
+        while self.get_up_left(holizon, valtical).is_ok() {
+            let masu = self.get_up_left(holizon, valtical).unwrap();
+            holizon = masu.get_h_index();
+            valtical = masu.get_v_index();
+            result.push(masu);
+        }
+        result
+    }
+    pub fn get_down_left_line(&self, holizon: usize, valtical: usize) -> Vec<Masu<T>> {
+        let mut holizon = holizon;
+        let mut valtical = valtical;
+        let mut result = Vec::new();
+        while self.get_down_left(holizon, valtical).is_ok() {
+            let masu = self.get_down_left(holizon, valtical).unwrap();
+            holizon = masu.get_h_index();
+            valtical = masu.get_v_index();
+            result.push(masu);
+        }
+        result
+    }
+    pub fn get_left_line(&self, holizon: usize, valtical: usize) -> Vec<Masu<T>> {
+        let mut holizon = holizon;
+        let mut valtical = valtical;
+        let mut result = Vec::new();
+        while self.get_left(holizon, valtical).is_ok() {
+            let masu = self.get_left(holizon, valtical).unwrap();
+            holizon = masu.get_h_index();
+            valtical = masu.get_v_index();
+            result.push(masu);
+        }
+        result
+    }
+    pub fn get_right_line(&self, holizon: usize, valtical: usize) -> Vec<Masu<T>> {
+        let mut holizon = holizon;
+        let mut valtical = valtical;
+        let mut result = Vec::new();
+        while self.get_right(holizon, valtical).is_ok() {
+            let masu = self.get_right(holizon, valtical).unwrap();
+            holizon = masu.get_h_index();
+            valtical = masu.get_v_index();
+            result.push(masu);
+        }
+        result
+    }
+    pub fn get_down_line(&self, holizon: usize, valtical: usize) -> Vec<Masu<T>> {
+        let mut holizon = holizon;
+        let mut valtical = valtical;
+        let mut result = Vec::new();
+        while self.get_down(holizon, valtical).is_ok() {
+            let masu = self.get_down(holizon, valtical).unwrap();
+            holizon = masu.get_h_index();
+            valtical = masu.get_v_index();
+            result.push(masu);
+        }
+        result
+    }
+    pub fn get_up_line(&self, holizon: usize, valtical: usize) -> Vec<Masu<T>> {
+        let mut holizon = holizon;
+        let mut valtical = valtical;
+        let mut result = Vec::new();
+        while self.get_up(holizon, valtical).is_ok() {
+            let masu = self.get_up(holizon, valtical).unwrap();
+            holizon = masu.get_h_index();
+            valtical = masu.get_v_index();
+            result.push(masu);
+        }
+        result
+    }
     pub fn change(&mut self, holizon: usize, valtical: usize, koma: T) -> Result<(), String> {
         if holizon >= self.h_len || valtical >= self.v_len {
             return Err(format!("index out of bounds :[{}{}]", holizon, valtical));
@@ -172,10 +188,177 @@ where
 #[cfg(test)]
 mod masu_new_test {
     #[test]
+    fn get_down_right_line_test() {
+        // Point -> |Y| | | | |
+        //          | | | | | |
+        //          | | | | | |
+        //          | | | |N| |
+        //          | | | | |Y|
+        let mut masu: MasuBoard<Mock> = MasuBoard::new(5, 5);
+        masu.change(0, 0, Mock::Yes).unwrap();
+        masu.change(3, 3, Mock::No).unwrap();
+        masu.change(4, 4, Mock::Yes).unwrap();
+        assert_eq!(
+            masu.get_down_right_line(0, 0),
+            vec![
+                Masu::new(Mock::Empty, 1, 1),
+                Masu::new(Mock::Empty, 2, 2),
+                Masu::new(Mock::No, 3, 3),
+                Masu::new(Mock::Yes, 4, 4)
+            ]
+        );
+    }
+    #[test]
+    fn get_up_left_line_test() {
+        //          |Y| | | | |
+        //          | | | | | |
+        //          | | | | | |
+        //          | | | |N| |
+        //          | | | | | | <-Point
+        let mut masu: MasuBoard<Mock> = MasuBoard::new(5, 5);
+        masu.change(0, 0, Mock::Yes).unwrap();
+        masu.change(3, 3, Mock::No).unwrap();
+        assert_eq!(
+            masu.get_up_left_line(4, 4),
+            vec![
+                Masu::new(Mock::No, 3, 3),
+                Masu::new(Mock::Empty, 2, 2),
+                Masu::new(Mock::Empty, 1, 1),
+                Masu::new(Mock::Yes, 0, 0)
+            ]
+        );
+    }
+    #[test]
+    fn get_up_right_line_test() {
+        //          | | | | |Y|
+        //          | | | |N| |
+        //          | | | | | |
+        //          | |Y| | | |
+        //  Point-> | | | | | |
+        let mut masu: MasuBoard<Mock> = MasuBoard::new(5, 5);
+        masu.change(4, 0, Mock::Yes).unwrap();
+        masu.change(3, 1, Mock::No).unwrap();
+        masu.change(1, 3, Mock::Yes).unwrap();
+        assert_eq!(
+            masu.get_up_right_line(0, 4),
+            vec![
+                Masu::new(Mock::Yes, 1, 3),
+                Masu::new(Mock::Empty, 2, 2),
+                Masu::new(Mock::No, 3, 1),
+                Masu::new(Mock::Yes, 4, 0)
+            ]
+        );
+    }
+    #[test]
+    fn get_down_left_line_test() {
+        //          | | | | |Y|<-Point
+        //          | | | |N| |
+        //          | | | | | |
+        //          | |Y| | | |
+        //          | | | | | |
+        let mut masu: MasuBoard<Mock> = MasuBoard::new(5, 5);
+        masu.change(4, 0, Mock::Yes).unwrap();
+        masu.change(3, 1, Mock::No).unwrap();
+        masu.change(1, 3, Mock::Yes).unwrap();
+        assert_eq!(
+            masu.get_down_left_line(4, 0),
+            vec![
+                Masu::new(Mock::No, 3, 1),
+                Masu::new(Mock::Empty, 2, 2),
+                Masu::new(Mock::Yes, 1, 3),
+                Masu::new(Mock::Empty, 0, 4)
+            ]
+        );
+    }
+    #[test]
+    fn get_left_line_test() {
+        //          |Y| | |N|Y|<-Point
+        //          | | | | | |
+        //          | | | | | |
+        //          | | | | | |
+        //          | | | | | |
+        let mut masu: MasuBoard<Mock> = MasuBoard::new(5, 5);
+        masu.change(0, 0, Mock::Yes).unwrap();
+        masu.change(3, 0, Mock::No).unwrap();
+        masu.change(4, 0, Mock::Yes).unwrap();
+        assert_eq!(
+            masu.get_left_line(4, 0),
+            vec![
+                Masu::new(Mock::No, 3, 0),
+                Masu::new(Mock::Empty, 2, 0),
+                Masu::new(Mock::Empty, 1, 0),
+                Masu::new(Mock::Yes, 0, 0)
+            ]
+        );
+    }
+    #[test]
+    fn get_right_line_test() {
+        //  Point-> |Y| | |N|Y|
+        //          | | | | | |
+        //          | | | | | |
+        //          | | | | | |
+        //          | | | | | |
+        let mut masu: MasuBoard<Mock> = MasuBoard::new(5, 5);
+        masu.change(0, 0, Mock::Yes).unwrap();
+        masu.change(3, 0, Mock::No).unwrap();
+        masu.change(4, 0, Mock::Yes).unwrap();
+        assert_eq!(
+            masu.get_right_line(0, 0),
+            vec![
+                Masu::new(Mock::Empty, 1, 0),
+                Masu::new(Mock::Empty, 2, 0),
+                Masu::new(Mock::No, 3, 0),
+                Masu::new(Mock::Yes, 4, 0)
+            ]
+        );
+    }
+    #[test]
+    fn get_down_line_test() {
+        //          |Y| | | | |
+        // Point->  |N| | | | |
+        //          |Y| | | | |
+        //          |N| | | | |
+        //          | | | | | |
+        let mut masu: MasuBoard<Mock> = MasuBoard::new(5, 5);
+        masu.change(0, 0, Mock::Yes).unwrap();
+        masu.change(0, 1, Mock::No).unwrap();
+        masu.change(0, 2, Mock::Yes).unwrap();
+        masu.change(0, 3, Mock::No).unwrap();
+        assert_eq!(
+            masu.get_down_line(0, 1),
+            vec![
+                Masu::new(Mock::Yes, 0, 2),
+                Masu::new(Mock::No, 0, 3),
+                Masu::new(Mock::Empty, 0, 4)
+            ]
+        );
+    }
+    #[test]
+    fn get_up_line_test() {
+        //          |Y| | | | |
+        //          |N| | | | |
+        //          |Y| | | | |
+        // Point->  |N| | | | |
+        //          | | | | | |
+        let mut masu: MasuBoard<Mock> = MasuBoard::new(5, 5);
+        masu.change(0, 0, Mock::Yes).unwrap();
+        masu.change(0, 1, Mock::No).unwrap();
+        masu.change(0, 2, Mock::Yes).unwrap();
+        masu.change(0, 3, Mock::No).unwrap();
+        assert_eq!(
+            masu.get_up_line(0, 3),
+            vec![
+                Masu::new(Mock::Yes, 0, 2),
+                Masu::new(Mock::No, 0, 1),
+                Masu::new(Mock::Yes, 0, 0)
+            ]
+        );
+    }
+    #[test]
     fn get_up_right_test() {
         let mut masu: MasuBoard<Mock> = MasuBoard::new(8, 8);
-        masu.change(2, 2, Mock::No);
-        masu.change(1, 1, Mock::Yes);
+        masu.change(2, 2, Mock::No).unwrap();
+        masu.change(1, 1, Mock::Yes).unwrap();
         assert_eq!(masu.get_up_right(1, 3).unwrap(), Masu::new(Mock::No, 2, 2));
         assert_eq!(masu.get_up_right(0, 2).unwrap(), Masu::new(Mock::Yes, 1, 1));
         assert_eq!(
@@ -194,8 +377,8 @@ mod masu_new_test {
     #[test]
     fn get_down_left_test() {
         let mut masu: MasuBoard<Mock> = MasuBoard::new(8, 8);
-        masu.change(2, 2, Mock::No);
-        masu.change(1, 1, Mock::Yes);
+        masu.change(2, 2, Mock::No).unwrap();
+        masu.change(1, 1, Mock::Yes).unwrap();
         assert_eq!(masu.get_down_left(3, 1).unwrap(), Masu::new(Mock::No, 2, 2));
         assert_eq!(
             masu.get_down_left(2, 0).unwrap(),
@@ -217,8 +400,8 @@ mod masu_new_test {
     #[test]
     fn get_up_left_test() {
         let mut masu: MasuBoard<Mock> = MasuBoard::new(8, 8);
-        masu.change(2, 2, Mock::No);
-        masu.change(1, 1, Mock::Yes);
+        masu.change(2, 2, Mock::No).unwrap();
+        masu.change(1, 1, Mock::Yes).unwrap();
         assert_eq!(masu.get_up_left(3, 3).unwrap(), Masu::new(Mock::No, 2, 2));
         assert_eq!(masu.get_up_left(2, 2).unwrap(), Masu::new(Mock::Yes, 1, 1));
         assert_eq!(
