@@ -11,20 +11,26 @@ impl GomokuBoard {
 
         GomokuBoard { masu }
     }
-    pub fn masu(&self, holizon: usize, valtical: usize) -> CorX {
-        self.masu.get(holizon, valtical)
+    fn masu(&self, holizon: usize, valtical: usize) -> CorX {
+        self.masu.get(holizon, valtical).unwrap()
     }
     pub fn print(&self) {
         self.masu.print()
     }
     pub fn put(&mut self, holizon: usize, valtical: usize, koma: CorX) -> Result<(), String> {
         if self.is_puttable(holizon, valtical) {
-            self.masu.change(holizon, valtical, koma);
-            return Ok(());
+            match self.masu.change(holizon, valtical, koma) {
+                Ok(_) => Ok(()),
+                Err(e) => Err(e),
+            }
+        } else {
+            Err(format!("can not put [{},{}]", holizon, valtical))
         }
-        Err(format!("can not put [{},{}]", holizon, valtical))
     }
     pub fn is_puttable(&self, holizon: usize, valtical: usize) -> bool {
+        if holizon >= 3 || valtical >= 3 {
+            return false;
+        }
         self.masu(holizon, valtical) == CorX::Empty
     }
     pub fn winner(&self) -> Option<CorX> {

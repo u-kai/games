@@ -66,8 +66,12 @@ impl GomokuCLI {
         let _ = stdin().read_line(&mut buf);
         let vec = buf
             .split(" ")
+            .filter(|s| s.len() < 3) //大きい数字は受け付けない
             .filter_map(|s| s.trim().parse::<usize>().ok())
             .collect::<Vec<_>>();
-        (vec[0], vec[1])
+        if vec.len() == 2 {
+            return (vec[0], vec[1]);
+        }
+        (10000000, 10000000)
     }
 }

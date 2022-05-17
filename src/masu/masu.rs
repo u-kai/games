@@ -1,6 +1,6 @@
 use std::fmt::Debug;
 
-use super::index::MasuIndex;
+use super::calcurator::IndexCalcurator;
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct MasuBoard<T>
 where
@@ -105,57 +105,64 @@ where
         }
         result
     }
-    pub fn change(&mut self, holizon: usize, valtical: usize, koma: T) {
-        self.masu[valtical][holizon] = koma
+    pub fn change(&mut self, holizon: usize, valtical: usize, koma: T) -> Result<(), String> {
+        if holizon >= self.h_len || valtical >= self.v_len {
+            return Err(format!("index out of bounds :[{}{}]", holizon, valtical));
+        }
+        self.masu[valtical][holizon] = koma;
+        Ok(())
     }
-    pub fn get(&self, holizon: usize, valtical: usize) -> T {
-        self.masu[valtical][holizon]
+    pub fn get(&self, holizon: usize, valtical: usize) -> Result<T, String> {
+        if holizon >= self.h_len || valtical >= self.v_len {
+            return Err(format!("index out of bounds :[{}{}]", holizon, valtical));
+        }
+        Ok(self.masu[valtical][holizon])
     }
     pub fn get_up(&self, holizon: usize, valtical: usize) -> Result<T, String> {
-        match MasuIndex::new(self.h_len, self.v_len, holizon, valtical).get_up() {
-            Ok(new_index) => Ok(self.get(new_index.get_h(), new_index.get_v())),
+        match IndexCalcurator::new(self.h_len, self.v_len, holizon, valtical).get_up() {
+            Ok(new_index) => Ok(self.get(new_index.get_h(), new_index.get_v()).unwrap()),
             Err(e) => Err(e),
         }
     }
     pub fn get_down(&self, holizon: usize, valtical: usize) -> Result<T, String> {
-        match MasuIndex::new(self.h_len, self.v_len, holizon, valtical).get_down() {
-            Ok(new_index) => Ok(self.get(new_index.get_h(), new_index.get_v())),
+        match IndexCalcurator::new(self.h_len, self.v_len, holizon, valtical).get_down() {
+            Ok(new_index) => Ok(self.get(new_index.get_h(), new_index.get_v()).unwrap()),
             Err(e) => Err(e),
         }
     }
     pub fn get_right(&self, holizon: usize, valtical: usize) -> Result<T, String> {
-        match MasuIndex::new(self.h_len, self.v_len, holizon, valtical).get_right() {
-            Ok(new_index) => Ok(self.get(new_index.get_h(), new_index.get_v())),
+        match IndexCalcurator::new(self.h_len, self.v_len, holizon, valtical).get_right() {
+            Ok(new_index) => Ok(self.get(new_index.get_h(), new_index.get_v()).unwrap()),
             Err(e) => Err(e),
         }
     }
     pub fn get_left(&self, holizon: usize, valtical: usize) -> Result<T, String> {
-        match MasuIndex::new(self.h_len, self.v_len, holizon, valtical).get_left() {
-            Ok(new_index) => Ok(self.get(new_index.get_h(), new_index.get_v())),
+        match IndexCalcurator::new(self.h_len, self.v_len, holizon, valtical).get_left() {
+            Ok(new_index) => Ok(self.get(new_index.get_h(), new_index.get_v()).unwrap()),
             Err(e) => Err(e),
         }
     }
     pub fn get_up_left(&self, holizon: usize, valtical: usize) -> Result<T, String> {
-        match MasuIndex::new(self.h_len, self.v_len, holizon, valtical).get_up_left() {
-            Ok(new_index) => Ok(self.get(new_index.get_h(), new_index.get_v())),
+        match IndexCalcurator::new(self.h_len, self.v_len, holizon, valtical).get_up_left() {
+            Ok(new_index) => Ok(self.get(new_index.get_h(), new_index.get_v()).unwrap()),
             Err(e) => Err(e),
         }
     }
     pub fn get_down_left(&self, holizon: usize, valtical: usize) -> Result<T, String> {
-        match MasuIndex::new(self.h_len, self.v_len, holizon, valtical).get_down_left() {
-            Ok(new_index) => Ok(self.get(new_index.get_h(), new_index.get_v())),
+        match IndexCalcurator::new(self.h_len, self.v_len, holizon, valtical).get_down_left() {
+            Ok(new_index) => Ok(self.get(new_index.get_h(), new_index.get_v()).unwrap()),
             Err(e) => Err(e),
         }
     }
     pub fn get_up_right(&self, holizon: usize, valtical: usize) -> Result<T, String> {
-        match MasuIndex::new(self.h_len, self.v_len, holizon, valtical).get_up_right() {
-            Ok(new_index) => Ok(self.get(new_index.get_h(), new_index.get_v())),
+        match IndexCalcurator::new(self.h_len, self.v_len, holizon, valtical).get_up_right() {
+            Ok(new_index) => Ok(self.get(new_index.get_h(), new_index.get_v()).unwrap()),
             Err(e) => Err(e),
         }
     }
     pub fn get_down_right(&self, holizon: usize, valtical: usize) -> Result<T, String> {
-        match MasuIndex::new(self.h_len, self.v_len, holizon, valtical).get_down_right() {
-            Ok(new_index) => Ok(self.get(new_index.get_h(), new_index.get_v())),
+        match IndexCalcurator::new(self.h_len, self.v_len, holizon, valtical).get_down_right() {
+            Ok(new_index) => Ok(self.get(new_index.get_h(), new_index.get_v()).unwrap()),
             Err(e) => Err(e),
         }
     }
@@ -430,7 +437,7 @@ mod masu_test {
     fn change_test() {
         let mut masu: MasuBoard<Mock> = MasuBoard::new(8, 8);
         masu.change(3, 5, Mock::Yes);
-        assert_eq!(masu.get(3, 5), Mock::Yes);
+        assert_eq!(masu.get(3, 5).unwrap(), Mock::Yes);
     }
 
     #[test]
