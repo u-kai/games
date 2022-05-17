@@ -25,101 +25,11 @@ where
     pub fn all(&self) -> &Vec<Vec<T>> {
         &self.masu
     }
-    pub fn get_down_right_line(&self, holizon: usize, valtical: usize) -> Vec<Masu<T>> {
-        let mut holizon = holizon;
-        let mut valtical = valtical;
-        let mut result = Vec::new();
-        while self.get_down_right(holizon, valtical).is_ok() {
-            let masu = self.get_down_right(holizon, valtical).unwrap();
-            holizon = masu.get_h_index();
-            valtical = masu.get_v_index();
-            result.push(masu);
+    fn get(&self, holizon: usize, valtical: usize) -> Result<T, String> {
+        if holizon >= self.h_len || valtical >= self.v_len {
+            return Err(format!("index out of bounds :[{}{}]", holizon, valtical));
         }
-        result
-    }
-    pub fn get_up_right_line(&self, holizon: usize, valtical: usize) -> Vec<Masu<T>> {
-        let mut holizon = holizon;
-        let mut valtical = valtical;
-        let mut result = Vec::new();
-        while self.get_up_right(holizon, valtical).is_ok() {
-            let masu = self.get_up_right(holizon, valtical).unwrap();
-            holizon = masu.get_h_index();
-            valtical = masu.get_v_index();
-            result.push(masu);
-        }
-        result
-    }
-    pub fn get_up_left_line(&self, holizon: usize, valtical: usize) -> Vec<Masu<T>> {
-        let mut holizon = holizon;
-        let mut valtical = valtical;
-        let mut result = Vec::new();
-        while self.get_up_left(holizon, valtical).is_ok() {
-            let masu = self.get_up_left(holizon, valtical).unwrap();
-            holizon = masu.get_h_index();
-            valtical = masu.get_v_index();
-            result.push(masu);
-        }
-        result
-    }
-    pub fn get_down_left_line(&self, holizon: usize, valtical: usize) -> Vec<Masu<T>> {
-        let mut holizon = holizon;
-        let mut valtical = valtical;
-        let mut result = Vec::new();
-        while self.get_down_left(holizon, valtical).is_ok() {
-            let masu = self.get_down_left(holizon, valtical).unwrap();
-            holizon = masu.get_h_index();
-            valtical = masu.get_v_index();
-            result.push(masu);
-        }
-        result
-    }
-    pub fn get_left_line(&self, holizon: usize, valtical: usize) -> Vec<Masu<T>> {
-        let mut holizon = holizon;
-        let mut valtical = valtical;
-        let mut result = Vec::new();
-        while self.get_left(holizon, valtical).is_ok() {
-            let masu = self.get_left(holizon, valtical).unwrap();
-            holizon = masu.get_h_index();
-            valtical = masu.get_v_index();
-            result.push(masu);
-        }
-        result
-    }
-    pub fn get_right_line(&self, holizon: usize, valtical: usize) -> Vec<Masu<T>> {
-        let mut holizon = holizon;
-        let mut valtical = valtical;
-        let mut result = Vec::new();
-        while self.get_right(holizon, valtical).is_ok() {
-            let masu = self.get_right(holizon, valtical).unwrap();
-            holizon = masu.get_h_index();
-            valtical = masu.get_v_index();
-            result.push(masu);
-        }
-        result
-    }
-    pub fn get_down_line(&self, holizon: usize, valtical: usize) -> Vec<Masu<T>> {
-        let mut holizon = holizon;
-        let mut valtical = valtical;
-        let mut result = Vec::new();
-        while self.get_down(holizon, valtical).is_ok() {
-            let masu = self.get_down(holizon, valtical).unwrap();
-            holizon = masu.get_h_index();
-            valtical = masu.get_v_index();
-            result.push(masu);
-        }
-        result
-    }
-    pub fn get_up_line(&self, holizon: usize, valtical: usize) -> Vec<Masu<T>> {
-        let mut holizon = holizon;
-        let mut valtical = valtical;
-        let mut result = Vec::new();
-        while self.get_up(holizon, valtical).is_ok() {
-            let masu = self.get_up(holizon, valtical).unwrap();
-            holizon = masu.get_h_index();
-            valtical = masu.get_v_index();
-            result.push(masu);
-        }
-        result
+        Ok(self.masu[valtical][holizon])
     }
     pub fn change(&mut self, holizon: usize, valtical: usize, koma: T) -> Result<(), String> {
         if holizon >= self.h_len || valtical >= self.v_len {
@@ -128,11 +38,61 @@ where
         self.masu[valtical][holizon] = koma;
         Ok(())
     }
-    fn get(&self, holizon: usize, valtical: usize) -> Result<T, String> {
-        if holizon >= self.h_len || valtical >= self.v_len {
-            return Err(format!("index out of bounds :[{}{}]", holizon, valtical));
-        }
-        Ok(self.masu[valtical][holizon])
+    pub fn get_down_right_line(&self, holizon: usize, valtical: usize) -> Vec<Masu<T>> {
+        self.create_index(holizon, valtical)
+            .get_down_right_line()
+            .iter()
+            .map(|index| self.new_masu(index.clone()))
+            .collect()
+    }
+    pub fn get_up_right_line(&self, holizon: usize, valtical: usize) -> Vec<Masu<T>> {
+        self.create_index(holizon, valtical)
+            .get_up_right_line()
+            .iter()
+            .map(|index| self.new_masu(index.clone()))
+            .collect()
+    }
+    pub fn get_up_left_line(&self, holizon: usize, valtical: usize) -> Vec<Masu<T>> {
+        self.create_index(holizon, valtical)
+            .get_up_left_line()
+            .iter()
+            .map(|index| self.new_masu(index.clone()))
+            .collect()
+    }
+    pub fn get_down_left_line(&self, holizon: usize, valtical: usize) -> Vec<Masu<T>> {
+        self.create_index(holizon, valtical)
+            .get_down_left_line()
+            .iter()
+            .map(|index| self.new_masu(index.clone()))
+            .collect()
+    }
+    pub fn get_left_line(&self, holizon: usize, valtical: usize) -> Vec<Masu<T>> {
+        self.create_index(holizon, valtical)
+            .get_left_line()
+            .iter()
+            .map(|index| self.new_masu(index.clone()))
+            .collect()
+    }
+    pub fn get_right_line(&self, holizon: usize, valtical: usize) -> Vec<Masu<T>> {
+        self.create_index(holizon, valtical)
+            .get_right_line()
+            .iter()
+            .map(|index| self.new_masu(index.clone()))
+            .collect()
+    }
+    pub fn get_down_line(&self, holizon: usize, valtical: usize) -> Vec<Masu<T>> {
+        self.create_index(holizon, valtical)
+            .get_down_line()
+            .iter()
+            .map(|index| self.new_masu(index.clone()))
+            .collect()
+    }
+    pub fn get_up_line(&self, holizon: usize, valtical: usize) -> Vec<Masu<T>> {
+        self.create_index(holizon, valtical)
+            .get_up_line()
+            .iter()
+            .map(|index| self.new_masu(index.clone()))
+            .collect()
     }
     pub fn get_up(&self, holizon: usize, valtical: usize) -> Result<Masu<T>, String> {
         self.get_neighbor(self.create_index(holizon, valtical).get_up())

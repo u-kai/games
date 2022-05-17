@@ -24,6 +24,70 @@ impl IndexCalcurator {
     pub fn get_h(&self) -> usize {
         self.h_index
     }
+    pub fn get_down_right_line(&self) -> Vec<IndexCalcurator> {
+        let mut result = Vec::new();
+        while self.get_down_right().is_ok() {
+            let index = self.get_down_right().unwrap();
+            result.push(index);
+        }
+        result
+    }
+    pub fn get_down_left_line(&self) -> Vec<IndexCalcurator> {
+        let mut result = Vec::new();
+        while self.get_down_left().is_ok() {
+            let index = self.get_down_left().unwrap();
+            result.push(index);
+        }
+        result
+    }
+    pub fn get_up_right_line(&self) -> Vec<IndexCalcurator> {
+        let mut result = Vec::new();
+        while self.get_up_right().is_ok() {
+            let index = self.get_up_right().unwrap();
+            result.push(index);
+        }
+        result
+    }
+    pub fn get_up_left_line(&self) -> Vec<IndexCalcurator> {
+        let mut result = Vec::new();
+        while self.get_up_left().is_ok() {
+            let index = self.get_up_left().unwrap();
+            result.push(index);
+        }
+        result
+    }
+    pub fn get_right_line(&self) -> Vec<IndexCalcurator> {
+        let mut result = Vec::new();
+        while self.get_right().is_ok() {
+            let index = self.get_right().unwrap();
+            result.push(index);
+        }
+        result
+    }
+    pub fn get_left_line(&self) -> Vec<IndexCalcurator> {
+        let mut result = Vec::new();
+        while self.get_left().is_ok() {
+            let index = self.get_left().unwrap();
+            result.push(index);
+        }
+        result
+    }
+    pub fn get_up_line(&self) -> Vec<IndexCalcurator> {
+        let mut result = Vec::new();
+        while self.get_up().is_ok() {
+            let index = self.get_up().unwrap();
+            result.push(index);
+        }
+        result
+    }
+    pub fn get_down_line(&self) -> Vec<IndexCalcurator> {
+        let mut result = Vec::new();
+        while self.get_down().is_ok() {
+            let index = self.get_down().unwrap();
+            result.push(index);
+        }
+        result
+    }
     pub fn get_up(&self) -> Result<IndexCalcurator, String> {
         if self.is_up_edge() {
             return Err(self.err_msg("up"));
@@ -111,6 +175,25 @@ impl IndexCalcurator {
 #[cfg(test)]
 mod index_test {
     use crate::masu::calcurator::IndexCalcurator;
+    #[test]
+    fn get_up_line_test() {
+        assert_eq!(
+            IndexCalcurator::new(5, 5, 2, 4).get_up_line(),
+            vec![
+                IndexCalcurator::new(5, 5, 2, 3),
+                IndexCalcurator::new(5, 5, 2, 2),
+                IndexCalcurator::new(5, 5, 2, 1),
+                IndexCalcurator::new(5, 5, 2, 0)
+            ]
+        );
+        assert_eq!(
+            IndexCalcurator::new(5, 5, 3, 2).get_up_line(),
+            vec![
+                IndexCalcurator::new(5, 5, 3, 1),
+                IndexCalcurator::new(5, 5, 3, 0),
+            ]
+        );
+    }
     #[test]
     fn get_down_left_test() {
         assert_eq!(
