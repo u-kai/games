@@ -96,15 +96,15 @@ where
         }
         result
     }
-    pub fn get_up_line(&self, holizon: usize, valtical: usize) -> Vec<T> {
-        let mut valtical = valtical;
-        let mut result = Vec::new();
-        while self.get_up(holizon, valtical).is_ok() {
-            result.push(self.get_up(holizon, valtical).unwrap());
-            valtical -= 1;
-        }
-        result
-    }
+    //pub fn get_up_line(&self, holizon: usize, valtical: usize) -> Vec<T> {
+    //let mut valtical = valtical;
+    //let mut result = Vec::new();
+    //while self.get_up(holizon, valtical).is_ok() {
+    //result.push(self.get_up(holizon, valtical).unwrap());
+    //valtical -= 1;
+    //}
+    //result
+    //}
     pub fn change(&mut self, holizon: usize, valtical: usize, koma: T) -> Result<(), String> {
         if holizon >= self.h_len || valtical >= self.v_len {
             return Err(format!("index out of bounds :[{}{}]", holizon, valtical));
@@ -118,9 +118,9 @@ where
         }
         Ok(self.masu[valtical][holizon])
     }
-    pub fn get_up(&self, holizon: usize, valtical: usize) -> Result<T, String> {
+    pub fn get_up(&self, holizon: usize, valtical: usize) -> Result<Masu<T>, String> {
         match IndexCalcurator::new(self.h_len, self.v_len, holizon, valtical).get_up() {
-            Ok(new_index) => Ok(self.get(new_index.get_h(), new_index.get_v()).unwrap()),
+            Ok(new_index) => Ok(self.new_masu(new_index)),
             Err(e) => Err(e),
         }
     }
@@ -211,6 +211,112 @@ mod masu_new_test {
             masu.get_down_right(7, 7),
             Err("[7,7] down is out bound".to_string())
         );
+    }
+    #[test]
+    fn get_up_test() {
+        let mut masu: MasuBoard<Mock> = MasuBoard::new(8, 8);
+        masu.change(2, 2, Mock::No).unwrap();
+        masu.change(1, 1, Mock::Yes).unwrap();
+        assert_eq!(masu.get_up(2, 3).unwrap(), Masu::new(Mock::No, 2, 2));
+        assert_eq!(masu.get_up(1, 2).unwrap(), Masu::new(Mock::Yes, 1, 1));
+        assert_eq!(masu.get_up(2, 1).unwrap(), Masu::new(Mock::Empty, 2, 0));
+        assert_eq!(masu.get_up(0, 0), Err("[0,0] up is out bound".to_string()));
+        assert_eq!(masu.get_up(7, 0), Err("[7,0] up is out bound".to_string()));
+    }
+    #[test]
+    fn change_test() {
+        let mut masu: MasuBoard<Mock> = MasuBoard::new(8, 8);
+        masu.change(3, 5, Mock::Yes).unwrap();
+        assert_eq!(masu.get(3, 5).unwrap(), Mock::Yes);
+    }
+    #[test]
+    fn new_test() {
+        let masu: MasuBoard<Mock> = MasuBoard::new(8, 8);
+        assert_eq!(
+            &vec![
+                vec![
+                    Mock::Empty,
+                    Mock::Empty,
+                    Mock::Empty,
+                    Mock::Empty,
+                    Mock::Empty,
+                    Mock::Empty,
+                    Mock::Empty,
+                    Mock::Empty
+                ],
+                vec![
+                    Mock::Empty,
+                    Mock::Empty,
+                    Mock::Empty,
+                    Mock::Empty,
+                    Mock::Empty,
+                    Mock::Empty,
+                    Mock::Empty,
+                    Mock::Empty
+                ],
+                vec![
+                    Mock::Empty,
+                    Mock::Empty,
+                    Mock::Empty,
+                    Mock::Empty,
+                    Mock::Empty,
+                    Mock::Empty,
+                    Mock::Empty,
+                    Mock::Empty
+                ],
+                vec![
+                    Mock::Empty,
+                    Mock::Empty,
+                    Mock::Empty,
+                    Mock::Empty,
+                    Mock::Empty,
+                    Mock::Empty,
+                    Mock::Empty,
+                    Mock::Empty
+                ],
+                vec![
+                    Mock::Empty,
+                    Mock::Empty,
+                    Mock::Empty,
+                    Mock::Empty,
+                    Mock::Empty,
+                    Mock::Empty,
+                    Mock::Empty,
+                    Mock::Empty
+                ],
+                vec![
+                    Mock::Empty,
+                    Mock::Empty,
+                    Mock::Empty,
+                    Mock::Empty,
+                    Mock::Empty,
+                    Mock::Empty,
+                    Mock::Empty,
+                    Mock::Empty
+                ],
+                vec![
+                    Mock::Empty,
+                    Mock::Empty,
+                    Mock::Empty,
+                    Mock::Empty,
+                    Mock::Empty,
+                    Mock::Empty,
+                    Mock::Empty,
+                    Mock::Empty
+                ],
+                vec![
+                    Mock::Empty,
+                    Mock::Empty,
+                    Mock::Empty,
+                    Mock::Empty,
+                    Mock::Empty,
+                    Mock::Empty,
+                    Mock::Empty,
+                    Mock::Empty
+                ],
+            ],
+            masu.all()
+        )
     }
     use crate::masu::masu::Masu;
 
