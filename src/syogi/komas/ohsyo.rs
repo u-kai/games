@@ -1,6 +1,6 @@
 use crate::{
     masu::calcurator::IndexCalcurator,
-    syogi::koma::{create_index, SyogiKoma, RL},
+    syogi::koma::{create_index, maybe_to_vec, SyogiKoma, RL},
 };
 
 #[derive(Clone, PartialEq, Eq)]
@@ -20,7 +20,7 @@ impl Ohsyo {
 }
 
 impl SyogiKoma for Ohsyo {
-    fn movable_paths(&self, holizon: usize, valtical: usize) -> Vec<IndexCalcurator> {
+    fn movable_paths(&self, holizon: usize, valtical: usize) -> Vec<Vec<IndexCalcurator>> {
         let now_index = create_index(holizon, valtical);
         [
             now_index.get_up(),
@@ -33,9 +33,10 @@ impl SyogiKoma for Ohsyo {
             now_index.get_down_left(),
         ]
         .iter()
-        .filter_map(|index| index.as_ref().ok())
         .cloned()
-        .collect::<Vec<_>>()
+        .map(|maybe| maybe_to_vec(maybe))
+        .filter(|vec| vec.len() > 0)
+        .collect()
     }
     fn rev(&mut self) -> () {
         ()
@@ -67,14 +68,14 @@ mod ohsyo_tests {
         assert_eq!(
             ohsyo.movable_paths(4, 5),
             vec![
-                create_index(4, 4),
-                create_index(4, 6),
-                create_index(5, 5),
-                create_index(3, 5),
-                create_index(5, 4),
-                create_index(3, 4),
-                create_index(5, 6),
-                create_index(3, 6),
+                vec![create_index(4, 4)],
+                vec![create_index(4, 6)],
+                vec![create_index(5, 5)],
+                vec![create_index(3, 5)],
+                vec![create_index(5, 4)],
+                vec![create_index(3, 4)],
+                vec![create_index(5, 6)],
+                vec![create_index(3, 6)],
             ]
         );
         // | | | | | | | | | |
@@ -90,7 +91,11 @@ mod ohsyo_tests {
         //now index
         assert_eq!(
             ohsyo.movable_paths(0, 8),
-            vec![create_index(0, 7), create_index(1, 8), create_index(1, 7),]
+            vec![
+                vec![create_index(0, 7)],
+                vec![create_index(1, 8)],
+                vec![create_index(1, 7)],
+            ]
         )
     }
 }

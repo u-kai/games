@@ -3,7 +3,7 @@ use std::fmt::Debug;
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct Masu<T>
 where
-    T: Debug + Default + Clone + Copy + PartialEq + Eq,
+    T: Debug + Default + Clone + PartialEq + Eq,
 {
     koma: T,
     h_index: usize,
@@ -11,7 +11,7 @@ where
 }
 impl<T> Masu<T>
 where
-    T: Debug + Default + Clone + Copy + PartialEq + Eq,
+    T: Debug + Default + Clone + PartialEq + Eq,
 {
     pub fn new(koma: T, h_index: usize, v_index: usize) -> Self {
         Masu {

@@ -4,7 +4,7 @@ use super::{calcurator::IndexCalcurator, masu::Masu};
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct MasuBoard<T>
 where
-    T: Debug + Clone + Copy + PartialEq + Eq,
+    T: Debug + Clone + PartialEq + Eq,
 {
     masu: Vec<Vec<T>>,
     h_len: usize,
@@ -13,7 +13,7 @@ where
 
 impl<T> MasuBoard<T>
 where
-    T: Debug + Clone + Copy + PartialEq + Eq + Default,
+    T: Debug + Clone + PartialEq + Eq + Default,
 {
     pub fn new(h_len: usize, v_len: usize) -> Self {
         MasuBoard {
@@ -25,11 +25,11 @@ where
     pub fn all(&self) -> &Vec<Vec<T>> {
         &self.masu
     }
-    fn get(&self, holizon: usize, valtical: usize) -> Result<T, String> {
+    pub fn get(&self, holizon: usize, valtical: usize) -> Result<T, String> {
         if holizon >= self.h_len || valtical >= self.v_len {
             return Err(format!("index out of bounds :[{}{}]", holizon, valtical));
         }
-        Ok(self.masu[valtical][holizon])
+        Ok(self.masu[valtical][holizon].clone())
     }
     pub fn change(&mut self, holizon: usize, valtical: usize, koma: T) -> Result<(), String> {
         if holizon >= self.h_len || valtical >= self.v_len {
