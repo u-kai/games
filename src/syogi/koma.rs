@@ -1,5 +1,7 @@
 use std::fmt::Debug;
 
+use crate::masu::calcurator::IndexCalcurator;
+
 use super::komas::{
     gin::Gin, hisya::Hisya, hohei::Hohei, kaku::Kaku, kasya::Kasya, keima::Keima, kin::Kin,
     ohsyo::Ohsyo,
@@ -10,10 +12,13 @@ pub enum RL {
     Left,
 }
 pub trait SyogiKoma {
-    fn is_movable(&self, holizon: usize, valtical: usize) -> bool;
-    fn reverce(&mut self) -> ();
+    fn movable_paths(&self, holizon: usize, valtical: usize) -> Vec<IndexCalcurator>;
+    fn rev(&mut self) -> ();
 }
 
+pub fn create_index(holizon: usize, valtical: usize) -> IndexCalcurator {
+    IndexCalcurator::new(9, 9, holizon, valtical)
+}
 #[derive(Clone, PartialEq, Eq)]
 pub enum Koma {
     Ohsyo(Ohsyo),
@@ -29,8 +34,12 @@ pub enum Koma {
 impl Debug for Koma {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         match self {
-            Koma::Ohsyo(_) => {
-                write!(f, "王")
+            Koma::Ohsyo(ohsyo) => {
+                if ohsyo.is_gyoku() {
+                    write!(f, "玉")
+                } else {
+                    write!(f, "王")
+                }
             }
             Koma::Hisya(_) => {
                 write!(f, "飛車")
