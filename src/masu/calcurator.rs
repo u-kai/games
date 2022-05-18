@@ -26,65 +26,81 @@ impl IndexCalcurator {
     }
     pub fn get_down_right_line(&self) -> Vec<IndexCalcurator> {
         let mut result = Vec::new();
-        while self.get_down_right().is_ok() {
-            let index = self.get_down_right().unwrap();
-            result.push(index);
+        let mut maybe_index = self.get_down_right();
+        while maybe_index.is_ok() {
+            let new_index = maybe_index.unwrap();
+            maybe_index = new_index.get_down_right();
+            result.push(new_index);
         }
         result
     }
     pub fn get_down_left_line(&self) -> Vec<IndexCalcurator> {
         let mut result = Vec::new();
-        while self.get_down_left().is_ok() {
-            let index = self.get_down_left().unwrap();
-            result.push(index);
+        let mut maybe_index = self.get_down_left();
+        while maybe_index.is_ok() {
+            let new_index = maybe_index.unwrap();
+            maybe_index = new_index.get_down_left();
+            result.push(new_index);
         }
         result
     }
     pub fn get_up_right_line(&self) -> Vec<IndexCalcurator> {
         let mut result = Vec::new();
-        while self.get_up_right().is_ok() {
-            let index = self.get_up_right().unwrap();
-            result.push(index);
+        let mut maybe_index = self.get_up_right();
+        while maybe_index.is_ok() {
+            let new_index = maybe_index.unwrap();
+            maybe_index = new_index.get_up_right();
+            result.push(new_index);
         }
         result
     }
     pub fn get_up_left_line(&self) -> Vec<IndexCalcurator> {
         let mut result = Vec::new();
-        while self.get_up_left().is_ok() {
-            let index = self.get_up_left().unwrap();
-            result.push(index);
+        let mut maybe_index = self.get_up_left();
+        while maybe_index.is_ok() {
+            let new_index = maybe_index.unwrap();
+            maybe_index = new_index.get_up_left();
+            result.push(new_index);
         }
         result
     }
     pub fn get_right_line(&self) -> Vec<IndexCalcurator> {
         let mut result = Vec::new();
-        while self.get_right().is_ok() {
-            let index = self.get_right().unwrap();
-            result.push(index);
+        let mut maybe_index = self.get_right();
+        while maybe_index.is_ok() {
+            let new_index = maybe_index.unwrap();
+            maybe_index = new_index.get_right();
+            result.push(new_index);
         }
         result
     }
     pub fn get_left_line(&self) -> Vec<IndexCalcurator> {
         let mut result = Vec::new();
-        while self.get_left().is_ok() {
-            let index = self.get_left().unwrap();
-            result.push(index);
+        let mut maybe_index = self.get_left();
+        while maybe_index.is_ok() {
+            let new_index = maybe_index.unwrap();
+            maybe_index = new_index.get_left();
+            result.push(new_index);
         }
         result
     }
     pub fn get_up_line(&self) -> Vec<IndexCalcurator> {
         let mut result = Vec::new();
-        while self.get_up().is_ok() {
-            let index = self.get_up().unwrap();
-            result.push(index);
+        let mut maybe_index = self.get_up();
+        while maybe_index.is_ok() {
+            let new_index = maybe_index.unwrap();
+            maybe_index = new_index.get_up();
+            result.push(new_index);
         }
         result
     }
     pub fn get_down_line(&self) -> Vec<IndexCalcurator> {
         let mut result = Vec::new();
-        while self.get_down().is_ok() {
-            let index = self.get_down().unwrap();
-            result.push(index);
+        let mut maybe_index = self.get_down();
+        while maybe_index.is_ok() {
+            let new_index = maybe_index.unwrap();
+            maybe_index = new_index.get_down();
+            result.push(new_index);
         }
         result
     }
