@@ -6,7 +6,7 @@ use super::komas::{
     gin::Gin, hisya::Hisya, hohei::Hohei, kaku::Kaku, kasya::Kasya, keima::Keima, kin::Kin,
     ohsyo::Ohsyo,
 };
-#[derive(Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub enum RL {
     Right,
     Left,
