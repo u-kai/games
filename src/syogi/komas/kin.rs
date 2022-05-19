@@ -25,8 +25,6 @@ impl SyogiKoma for Kin {
             maybe_to_vec(now_index.get_left()),
             maybe_to_vec(now_index.get_up_right()),
             maybe_to_vec(now_index.get_up_left()),
-            maybe_to_vec(now_index.get_down_right()),
-            maybe_to_vec(now_index.get_down_left()),
         ]
     }
     fn rev(&mut self) -> () {
@@ -67,10 +65,6 @@ mod kin_tests {
                 vec![create_index(2, 6),],
                 //up-left
                 vec![create_index(0, 6)],
-                //down-right
-                vec![create_index(2, 8)],
-                //down-left
-                vec![create_index(0, 8)]
             ]
         )
     }
