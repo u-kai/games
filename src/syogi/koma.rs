@@ -29,7 +29,7 @@ pub fn maybe_to_vec<T: Clone>(maybe: Result<T, String>) -> Vec<T> {
 #[derive(Clone, PartialEq, Eq)]
 pub enum Koma {
     Ohsyo(Ohsyo),
-    //Hisya(Hisya),
+    Hisya(Hisya),
     Kaku(Kaku),
     //Kin(Kin),
     //Gin(Gin),
@@ -46,43 +46,45 @@ impl Koma {
             }
             Koma::Ohsyo(ousyo) => ousyo.movable_paths(holizon, valtical),
             Koma::Kaku(kaku) => kaku.movable_paths(holizon, valtical),
+            Koma::Hisya(hisya) => hisya.movable_paths(holizon, valtical),
         }
     }
 }
 impl Debug for Koma {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         match self {
-            Koma::Ohsyo(ohsyo) => {
-                if ohsyo.is_gyoku() {
-                    write!(f, "玉")
-                } else {
-                    write!(f, "王")
-                }
-            }
-            //Koma::Hisya(_) => {
-            //write!(f, "飛車")
+            //Koma::Ohsyo(ohsyo) => {
+            //if ohsyo.is_gyoku() {
+            //write!(f, "玉")
+            //} else {
+            //write!(f, "王")
             //}
-            Koma::Kaku(_) => {
-                write!(f, "角")
-            }
-            //Koma::Kin(_) => {
-            //write!(f, "金")
             //}
-            //Koma::Gin(_) => {
-            //write!(f, "銀")
+            ////Koma::Hisya(_) => {
+            ////write!(f, "飛車")
+            ////}
+            //Koma::Kaku(_) => {
+            //write!(f, "角")
             //}
-            //Koma::Keima(_) => {
-            //write!(f, "桂馬")
-            //}
-            //Koma::Kasya(_) => {
-            //write!(f, "香車")
-            //}
-            //Koma::Hohei(_) => {
-            //write!(f, "歩兵")
-            //}
+            ////Koma::Kin(_) => {
+            ////write!(f, "金")
+            ////}
+            ////Koma::Gin(_) => {
+            ////write!(f, "銀")
+            ////}
+            ////Koma::Keima(_) => {
+            ////write!(f, "桂馬")
+            ////}
+            ////Koma::Kasya(_) => {
+            ////write!(f, "香車")
+            ////}
+            ////Koma::Hohei(_) => {
+            ////write!(f, "歩兵")
+            ////}
             Koma::Empty => {
                 write!(f, r#"　　"#)
             }
+            _i => Ok(println!("{:?}", self)),
         }
     }
 }

@@ -1,3 +1,5 @@
+use std::fmt::Debug;
+
 use crate::{
     masu::calcurator::IndexCalcurator,
     syogi::koma::{create_index, maybe_to_vec, SyogiKoma, RL},
@@ -46,6 +48,16 @@ impl SyogiKoma for Kaku {
     }
     fn rev(&mut self) -> () {
         self.is_rev = true
+    }
+}
+
+impl Debug for Kaku {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        if self.is_rev {
+            write!(f, "角")
+        } else {
+            write!(f, "龍馬")
+        }
     }
 }
 

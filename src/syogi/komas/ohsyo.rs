@@ -1,3 +1,5 @@
+use std::fmt::Debug;
+
 use crate::{
     masu::calcurator::IndexCalcurator,
     syogi::koma::{create_index, maybe_to_vec, SyogiKoma, RL},
@@ -40,6 +42,16 @@ impl SyogiKoma for Ohsyo {
     }
     fn rev(&mut self) -> () {
         ()
+    }
+}
+
+impl Debug for Ohsyo {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        if self.is_gyoku() {
+            write!(f, "玉")
+        } else {
+            write!(f, "王")
+        }
     }
 }
 #[cfg(test)]

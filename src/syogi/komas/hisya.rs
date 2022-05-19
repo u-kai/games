@@ -1,3 +1,5 @@
+use std::fmt::{write, Debug};
+
 use crate::{
     masu::calcurator::IndexCalcurator,
     syogi::koma::{create_index, maybe_to_vec, SyogiKoma, RL},
@@ -38,6 +40,15 @@ impl SyogiKoma for Hisya {
     }
     fn rev(&mut self) -> () {
         self.is_rev = true
+    }
+}
+impl Debug for Hisya {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        if self.is_rev {
+            write!(f, "龍玉")
+        } else {
+            write!(f, "飛車")
+        }
     }
 }
 #[cfg(test)]
