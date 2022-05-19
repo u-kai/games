@@ -1,5 +1,3 @@
-use std::ops::Index;
-
 use crate::{
     masu::calcurator::IndexCalcurator,
     syogi::koma::{create_index, maybe_to_vec, SyogiKoma, RL},
