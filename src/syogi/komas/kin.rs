@@ -44,6 +44,31 @@ impl SyogiKoma for Kin {
     }
 }
 
+pub fn kin_move(r_l: RL, holizon: usize, valtical: usize) -> Vec<Vec<IndexCalcurator>> {
+    let now_index = create_index(holizon, valtical);
+    match r_l {
+        RL::Right => {
+            vec![
+                maybe_to_vec(now_index.get_up()),
+                maybe_to_vec(now_index.get_down()),
+                maybe_to_vec(now_index.get_right()),
+                maybe_to_vec(now_index.get_left()),
+                maybe_to_vec(now_index.get_up_right()),
+                maybe_to_vec(now_index.get_up_left()),
+            ]
+        }
+        _ => {
+            vec![
+                maybe_to_vec(now_index.get_up()),
+                maybe_to_vec(now_index.get_down()),
+                maybe_to_vec(now_index.get_right()),
+                maybe_to_vec(now_index.get_left()),
+                maybe_to_vec(now_index.get_down_right()),
+                maybe_to_vec(now_index.get_down_left()),
+            ]
+        }
+    }
+}
 #[cfg(test)]
 mod kin_tests {
     use crate::syogi::koma::{create_index, SyogiKoma, RL};
