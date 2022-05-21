@@ -47,8 +47,8 @@ impl GomokuBoard {
             }
         }
         for v in 0..3 {
-            if self.is_right_align(v, 0) {
-                return Some(self.masu(v, 0));
+            if self.is_right_align(0, v) {
+                return Some(self.masu(0, v));
             }
         }
         //todo
@@ -159,6 +159,13 @@ mod gomoku_test {
         board.put(1, 1, CorX::Circle).unwrap();
         board.put(0, 2, CorX::Circle).unwrap();
         assert_eq!(board.winner(), Some(CorX::Circle));
+        let mut board = GomokuBoard::new();
+        board.put(1, 1, CorX::Circle).unwrap();
+        board.put(2, 1, CorX::Xross).unwrap();
+        board.put(0, 0, CorX::Circle).unwrap();
+        board.put(2, 2, CorX::Xross).unwrap();
+        board.put(2, 0, CorX::Circle).unwrap();
+        assert_eq!(board.winner(), None);
     }
     #[test]
     fn is_puttable() {
