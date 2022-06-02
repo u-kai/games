@@ -3,7 +3,7 @@ use std::fmt::Debug;
 use crate::masu::calcurator::IndexCalcurator;
 
 use super::komas::{
-    gin::Gin, hisya::Hisya, hohei::Hohei, kaku::Kaku, kasya::Kasya, keima::Keima, kin::Kin,
+    gin::Gin, hisya::Hisya, hohei::Hohei, kaku::Kaku, kyosya::Kyosya, keima::Keima, kin::Kin,
     ohsyo::Ohsyo,
 };
 #[derive(Debug, Clone, PartialEq, Eq)]
@@ -34,7 +34,7 @@ pub enum Koma {
     //Kin(Kin),
     //Gin(Gin),
     //Keima(Keima),
-    //Kasya(Kasya),
+    //Kyosya(Kyosya),
     //Hohei(Hohei),
     Empty,
 }
@@ -75,7 +75,7 @@ impl Debug for Koma {
             ////Koma::Keima(_) => {
             ////write!(f, "桂馬")
             ////}
-            ////Koma::Kasya(_) => {
+            ////Koma::Kyosya(_) => {
             ////write!(f, "香車")
             ////}
             ////Koma::Hohei(_) => {
