@@ -3,6 +3,8 @@ use crate::{
     syogi::koma::{create_index, maybe_to_vec, SyogiKoma, RL},
 };
 
+use super::kin::kin_move;
+
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct Keima {
     r_l: RL,
@@ -21,7 +23,7 @@ impl SyogiKoma for Keima {
         match self.r_l {
             RL::Right => {
                 if self.is_rev {
-                    return vec![now_index.get_up_line()];
+                    return kin_move(self.r_l.clone(), holizon, valtical);
                 }
                 vec![
                     maybe_to_vec(now_index.get_up_right()),
@@ -30,7 +32,7 @@ impl SyogiKoma for Keima {
             }
             _ => {
                 if self.is_rev {
-                    return vec![now_index.get_down_line()];
+                    return kin_move(self.r_l.clone(), holizon, valtical);
                 }
                 vec![
                     maybe_to_vec(now_index.get_down_right()),
@@ -62,13 +64,23 @@ mod keima_tests {
         // | | | | | | | | | |
         // | |桂馬| | | | | | | |<-(1,7)
         // | | | | | | | | | |
-        let mut keima = Keima::new(RL::Left);
+        let mut keima = Keima::new(RL::Right);
         keima.rev();
         assert_eq!(
             keima.movable_paths(1, 7),
             vec![
-                //up-line
+                //up
+                vec![create_index(1, 6)],
+                //down
                 vec![create_index(1, 8)],
+                //right
+                vec![create_index(2, 7)],
+                //left
+                vec![create_index(0, 7)],
+                //up-right
+                vec![create_index(2, 6),],
+                //up-left
+                vec![create_index(0, 6)],
             ]
         )
     }
@@ -89,8 +101,18 @@ mod keima_tests {
         assert_eq!(
             keima.movable_paths(1, 7),
             vec![
-                //down-line
+                //up
+                vec![create_index(1, 6)],
+                //down
                 vec![create_index(1, 8)],
+                //right
+                vec![create_index(2, 7)],
+                //left
+                vec![create_index(0, 7)],
+                //down-right
+                vec![create_index(2, 8)],
+                //down-left
+                vec![create_index(0, 8)]
             ]
         )
     }
