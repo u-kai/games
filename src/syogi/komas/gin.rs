@@ -3,6 +3,8 @@ use crate::{
     syogi::koma::{create_index, maybe_to_vec, SyogiKoma, RL},
 };
 
+use super::kin::kin_move;
+
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct Gin {
     r_l: RL,
@@ -20,14 +22,7 @@ impl SyogiKoma for Gin {
         match self.r_l {
             RL::Right => {
                 if self.is_rev {
-                    return vec![
-                        maybe_to_vec(now_index.get_up()),
-                        maybe_to_vec(now_index.get_down()),
-                        maybe_to_vec(now_index.get_right()),
-                        maybe_to_vec(now_index.get_left()),
-                        maybe_to_vec(now_index.get_up_right()),
-                        maybe_to_vec(now_index.get_up_left()),
-                    ];
+                    return kin_move(self.r_l.clone(), holizon, valtical)
                 }
                 vec![
                     maybe_to_vec(now_index.get_up()),
@@ -39,14 +34,7 @@ impl SyogiKoma for Gin {
             }
             _ => {
                 if self.is_rev {
-                    return vec![
-                        maybe_to_vec(now_index.get_up()),
-                        maybe_to_vec(now_index.get_down()),
-                        maybe_to_vec(now_index.get_right()),
-                        maybe_to_vec(now_index.get_left()),
-                        maybe_to_vec(now_index.get_down_right()),
-                        maybe_to_vec(now_index.get_down_left()),
-                    ];
+                    return kin_move(self.r_l.clone(), holizon, valtical)
                 }
                 vec![
                     maybe_to_vec(now_index.get_down()),
