@@ -1,10 +1,9 @@
-
 use crate::{
     masu::calcurator::IndexCalcurator,
     syogi::koma::{create_index, maybe_to_vec, SyogiKoma, RL},
 };
 
-use super::kin::{Kin, kin_move};
+use super::kin::{kin_move, Kin};
 
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct Kyosya {
@@ -24,19 +23,15 @@ impl SyogiKoma for Kyosya {
         match self.r_l {
             RL::Right => {
                 if self.is_rev {
-                    return kin_move(self.r_l.clone(), holizon, valtical)
+                    return kin_move(self.r_l.clone(), holizon, valtical);
                 }
-                vec![
-                    now_index.get_up_line(),
-                ]
+                vec![now_index.get_up_line()]
             }
             _ => {
                 if self.is_rev {
-                    return kin_move(self.r_l.clone(), holizon, valtical)
+                    return kin_move(self.r_l.clone(), holizon, valtical);
                 }
-                vec![
-                now_index.get_down_line()
-                ]
+                vec![now_index.get_down_line()]
             }
         }
     }
@@ -154,7 +149,15 @@ mod kyosya_tests {
             kyosya.movable_paths(1, 7),
             vec![
                 //up-line
-                vec![create_index(1, 6),create_index(1, 5),create_index(1, 4),create_index(1, 3),create_index(1, 2),create_index(1, 1),create_index(1, 0)],
+                vec![
+                    create_index(1, 6),
+                    create_index(1, 5),
+                    create_index(1, 4),
+                    create_index(1, 3),
+                    create_index(1, 2),
+                    create_index(1, 1),
+                    create_index(1, 0)
+                ],
             ]
         )
     }

@@ -22,7 +22,7 @@ impl SyogiKoma for Gin {
         match self.r_l {
             RL::Right => {
                 if self.is_rev {
-                    return kin_move(self.r_l.clone(), holizon, valtical)
+                    return kin_move(self.r_l.clone(), holizon, valtical);
                 }
                 vec![
                     maybe_to_vec(now_index.get_up()),
@@ -34,7 +34,7 @@ impl SyogiKoma for Gin {
             }
             _ => {
                 if self.is_rev {
-                    return kin_move(self.r_l.clone(), holizon, valtical)
+                    return kin_move(self.r_l.clone(), holizon, valtical);
                 }
                 vec![
                     maybe_to_vec(now_index.get_down()),

@@ -1,6 +1,11 @@
+use std::fmt::Debug;
+
 use crate::masu::{calcurator::IndexCalcurator, nboard::MasuBoard};
 
-use super::koma::{create_index, Koma, SyogiKoma};
+use super::{
+    koma::{create_index, Koma, SyogiKoma, RL},
+    komas::{gin::Gin, keima::Keima, kin::Kin, kyosya::Kyosya, ohsyo::Ohsyo},
+};
 
 pub trait Syogi<T> {
     fn move_to(
@@ -18,6 +23,33 @@ pub struct SyogiBoard {
     masu: MasuBoard<Koma>,
 }
 impl SyogiBoard {
+    pub fn new() -> Self {
+        // | | | | | | | | | |
+        // | | | | | | | | | |
+        // | | | | | | | | | |
+        // | | | | | | | | | |
+        // | | | | | | | | | |
+        // | | | | | | | | | |
+        // | | | | | | | | | |
+        // | || | | | | | | |<-(1,7)
+        // | | | | | | | | | |
+        let mut masu = MasuBoard::new(9, 9);
+        masu.change(0, 0, Koma::Kyosya(Kyosya::new(RL::Right)))
+            .unwrap();
+        masu.change(1, 0, Koma::Keima(Keima::new(RL::Right)))
+            .unwrap();
+        masu.change(2, 0, Koma::Gin(Gin::new(RL::Right))).unwrap();
+        masu.change(3, 0, Koma::Kin(Kin::new(RL::Right))).unwrap();
+        masu.change(4, 0, Koma::Ohsyo(Ohsyo::new(RL::Right)))
+            .unwrap();
+        masu.change(5, 0, Koma::Kin(Kin::new(RL::Right))).unwrap();
+        masu.change(6, 0, Koma::Gin(Gin::new(RL::Right))).unwrap();
+        masu.change(7, 0, Koma::Keima(Keima::new(RL::Right)))
+            .unwrap();
+        masu.change(8, 0, Koma::Kyosya(Kyosya::new(RL::Right)))
+            .unwrap();
+        SyogiBoard { masu }
+    }
     fn get(&self, holizon: usize, valtical: usize) -> Result<Koma, String> {
         self.masu.get(holizon, valtical)
     }
@@ -35,6 +67,9 @@ impl SyogiBoard {
     }
     fn index_to_koma(&self, index: IndexCalcurator) -> Koma {
         self.get(index.get_h(), index.get_v()).unwrap()
+    }
+    pub fn print(&self) -> () {
+        self.masu.print()
     }
 }
 
@@ -86,3 +121,9 @@ impl Syogi<Koma> for SyogiBoard {
         Ok(())
     }
 }
+
+//impl Debug for SyogiBoard {
+//fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+//write!(f, self.print())
+//}
+//}
