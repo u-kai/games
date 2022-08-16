@@ -5,6 +5,7 @@ use syogi::board::SyogiBoard;
 mod gomoku_narabe;
 mod masu;
 mod osero;
+mod picross;
 
 mod syogi;
 
