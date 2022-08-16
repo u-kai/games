@@ -73,6 +73,9 @@ mod picross_test {
     use super::*;
     #[test]
     fn new_test() {
+        let black = SquaresColor::Black;
+        let white = SquaresColor::default();
+
         //      1
         //    5 2 3 1 1
         //  2 ■ ■ □ □ □
@@ -80,8 +83,6 @@ mod picross_test {
         //  3 ■ ■ ■ □ □
         //  5 ■ ■ ■ ■ ■
         //1 1 ■ □ ■ □ □
-        let black = SquaresColor::Black;
-        let white = SquaresColor::default();
         let filed = PicrossFiled::new(vec![
             vec![black, black, white, white, white],
             vec![black, white, white, white, white],
@@ -97,12 +98,41 @@ mod picross_test {
             filed.above_conditions,
             vec![vec![5], vec![2, 1], vec![3], vec![1], vec![1]],
         );
-
         //        1
-        //    1 3 2
+        //    1 3 1
         //  3 ■ ■ ■
         //  1 □ ■ □
         //  2 □ ■ ■
+        let filed = PicrossFiled::new(vec![
+            vec![black, black, black],
+            vec![white, black, white],
+            vec![white, black, black],
+        ]);
+        assert_eq!(filed.left_conditions, vec![vec![3], vec![1], vec![2]],);
+        assert_eq!(filed.above_conditions, vec![vec![1], vec![3], vec![1, 1]],);
+
+        //      3 2
+        //      1 1 3 1 2
+        //    2 ■ ■ □ □ □
+        //    2 ■ ■ □ □ □
+        //  1 1 ■ □ ■ □ □
+        //    4 □ ■ ■ ■ ■
+        //1 1 1 ■ □ ■ □ ■
+        let filed = PicrossFiled::new(vec![
+            vec![black, black, white, white, white],
+            vec![black, black, white, white, white],
+            vec![black, white, black, white, white],
+            vec![white, black, black, black, black],
+            vec![black, white, black, white, black],
+        ]);
+        assert_eq!(
+            filed.left_conditions,
+            vec![vec![2], vec![2], vec![1, 1], vec![4], vec![1, 1, 1]],
+        );
+        assert_eq!(
+            filed.above_conditions,
+            vec![vec![1, 3], vec![1, 2], vec![3], vec![1], vec![2]],
+        );
     }
     #[test]
     fn can_fill_test() {
