@@ -1,13 +1,13 @@
 use std::fmt::Debug;
 
 #[derive(PartialEq, Clone)]
-pub(super) struct PicrossFiled {
+pub struct PicrossFiled {
     filed: Vec<Vec<Squares>>,
     left_conditions: Vec<Vec<usize>>,
     above_conditions: Vec<Vec<usize>>,
 }
 impl PicrossFiled {
-    fn new(filed: Vec<Vec<SquaresColor>>) -> Self {
+    pub fn new(filed: Vec<Vec<SquaresColor>>) -> Self {
         //      1
         //    5 2 3 1 1
         //  2 ■ ■ □ □ □
@@ -52,6 +52,14 @@ impl PicrossFiled {
             })
             .collect()
     }
+    pub fn fill_charenge(&mut self, i: usize, j: usize) -> bool {
+        if !self.can_fill(i, j) {
+            false
+        } else {
+            self.filed[i][j].fill();
+            true
+        }
+    }
     fn square_num(&self) -> usize {
         self.filed.len()
     }
@@ -64,13 +72,134 @@ impl PicrossFiled {
                 self.square_num()
             );
         }
+        let row_filled_num = self.filed[i].iter().fold(0, |acc, cell| {
+            acc + if cell.color.done_fill() { 1 } else { 0 }
+        });
+        let column_filled_num = self.filed.iter().fold(0, |acc, row| {
+            acc + {
+                row.iter().enumerate().fold(0, |acc, (index, cell)| {
+                    acc + if cell.color.done_fill() && j == index {
+                        1
+                    } else {
+                        0
+                    }
+                })
+            }
+        });
         self.filed[i][j].can_fill()
+    }
+    fn column_filled_num(&self, j: usize) -> usize {
+        self.filed.iter().fold(0, |acc, row| {
+            acc + {
+                row.iter().enumerate().fold(0, |acc, (index, cell)| {
+                    acc + if cell.color.done_fill() && j == index {
+                        1
+                    } else {
+                        0
+                    }
+                })
+            }
+        })
+    }
+    fn row_filled_num(&self, i: usize) -> usize {
+        self.filed[i].iter().fold(0, |acc, cell| {
+            acc + if cell.color.done_fill() { 1 } else { 0 }
+        })
+    }
+}
+
+impl Debug for PicrossFiled {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        let mut s = String::new();
+        for row in &self.filed {
+            let mut r = String::new();
+            for cell in row {
+                let square = if cell.color == SquaresColor::Black {
+                    "■"
+                } else {
+                    "□"
+                };
+                r = format!("{}{} ", r, square);
+            }
+            s = format!("{}{}\n", s, r)
+        }
+        write!(f, "{}", s)
     }
 }
 
 #[cfg(test)]
 mod picross_test {
     use super::*;
+    fn fill_sample() -> PicrossFiled {
+        let black = SquaresColor::Black;
+        let white = SquaresColor::default();
+        let mut picross = PicrossFiled::new(vec![
+            vec![black, black, white, white, white],
+            vec![black, white, white, white, white],
+            vec![black, black, black, white, white],
+            vec![black; 5],
+            vec![black, white, black, white, white],
+        ]);
+        picross.fill_charenge(0, 0);
+        picross.fill_charenge(0, 1);
+        picross.fill_charenge(0, 2);
+        picross.fill_charenge(1, 0);
+        picross.fill_charenge(2, 0);
+        picross.fill_charenge(2, 1);
+        picross.fill_charenge(2, 2);
+        picross.fill_charenge(3, 0);
+        picross.fill_charenge(3, 1);
+        picross.fill_charenge(3, 2);
+        picross.fill_charenge(3, 3);
+        picross.fill_charenge(3, 4);
+        picross.fill_charenge(4, 0);
+        picross.fill_charenge(4, 2);
+        picross
+    }
+    #[test]
+    fn filled_num_test() {
+        let picross = fill_sample();
+        println!("{:?}", picross);
+        //row
+        assert_eq!(picross.row_filled_num(0), 3);
+        assert_eq!(picross.row_filled_num(1), 1);
+        assert_eq!(picross.row_filled_num(2), 3);
+        assert_eq!(picross.row_filled_num(3), 5);
+        assert_eq!(picross.row_filled_num(4), 2);
+        //column
+        assert_eq!(picross.column_filled_num(0), 5);
+        assert_eq!(picross.column_filled_num(1), 3);
+        assert_eq!(picross.column_filled_num(2), 4);
+        assert_eq!(picross.column_filled_num(3), 1);
+        assert_eq!(picross.column_filled_num(4), 1);
+    }
+    #[test]
+    fn fill_charenge_test() {
+        let black = SquaresColor::Black;
+        let white = SquaresColor::default();
+        let mut picross = PicrossFiled::new(vec![
+            vec![black, black, white, white, white],
+            vec![black, white, white, white, white],
+            vec![black, black, black, white, white],
+            vec![black; 5],
+            vec![black, white, black, white, white],
+        ]);
+        assert!(picross.fill_charenge(0, 1));
+        assert!(picross.fill_charenge(0, 2));
+        assert!(picross.fill_charenge(1, 0));
+        assert!(picross.fill_charenge(2, 0));
+        assert!(picross.fill_charenge(2, 1));
+        assert!(picross.fill_charenge(2, 2));
+        assert!(picross.fill_charenge(3, 0));
+        assert!(picross.fill_charenge(3, 1));
+        assert!(picross.fill_charenge(3, 2));
+        assert!(picross.fill_charenge(3, 3));
+        assert!(picross.fill_charenge(3, 4));
+        assert!(picross.fill_charenge(4, 0));
+        assert!(picross.fill_charenge(4, 2));
+        assert!(!picross.fill_charenge(4, 2));
+        //assert!(!picross.fill_charenge(4, 3));
+    }
     #[test]
     fn new_test() {
         let black = SquaresColor::Black;
@@ -182,7 +311,7 @@ impl Squares {
     }
 }
 #[derive(PartialEq, Clone, Copy)]
-pub(super) enum SquaresColor {
+pub enum SquaresColor {
     White,
     Black,
 }
