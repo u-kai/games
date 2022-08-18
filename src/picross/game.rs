@@ -39,6 +39,12 @@ impl PicrossFiled {
             left_rules: Self::filtering_rule(left_rules),
         }
     }
+    pub fn is_clear(&self) -> bool {
+        self.filed.iter().all(|row| {
+            row.iter()
+                .all(|s| (s.can_fill() && s.done_fill()) || !s.can_fill())
+        })
+    }
     fn column(&self, j: usize) -> Vec<Squares> {
         self.filed.iter().map(|row| row[j]).collect()
     }
@@ -102,6 +108,18 @@ impl Debug for PicrossFiled {
 #[cfg(test)]
 mod picross_test {
     use super::*;
+    fn picross_sample() -> PicrossFiled {
+        let black = SquaresColor::Black;
+        let white = SquaresColor::default();
+        let picross = PicrossFiled::new(vec![
+            vec![black, black, white, white, white],
+            vec![black, white, white, white, white],
+            vec![black, black, black, white, white],
+            vec![black; 5],
+            vec![black, white, black, white, white],
+        ]);
+        picross
+    }
     fn fill_sample() -> PicrossFiled {
         let black = SquaresColor::Black;
         let white = SquaresColor::default();
@@ -131,9 +149,82 @@ mod picross_test {
         picross
     }
     #[test]
-    fn fill_charenge_test() {
+    fn is_clear_test() {
+        let mut sample = picross_sample();
+        sample.fill_charenge(0, 0);
+        assert!(!sample.is_clear());
+        sample.fill_charenge(0, 1);
+        assert!(!sample.is_clear());
+        sample.fill_charenge(0, 2);
+        assert!(!sample.is_clear());
+        sample.fill_charenge(1, 0);
+        assert!(!sample.is_clear());
+        sample.fill_charenge(2, 0);
+        assert!(!sample.is_clear());
+        sample.fill_charenge(2, 1);
+        assert!(!sample.is_clear());
+        sample.fill_charenge(2, 2);
+        assert!(!sample.is_clear());
+        sample.fill_charenge(3, 0);
+        assert!(!sample.is_clear());
+        sample.fill_charenge(3, 1);
+        assert!(!sample.is_clear());
+        sample.fill_charenge(3, 2);
+        assert!(!sample.is_clear());
+        sample.fill_charenge(3, 3);
+        assert!(!sample.is_clear());
+        sample.fill_charenge(3, 4);
+        assert!(!sample.is_clear());
+        sample.fill_charenge(4, 0);
+        assert!(!sample.is_clear());
+        sample.fill_charenge(4, 2);
+        assert!(sample.is_clear());
+
+        //      3 2
+        //      1 1 3 1 2
+        //    2 ■ ■ □ □ □
+        //    2 ■ ■ □ □ □
+        //  1 1 ■ □ ■ □ □
+        //    4 □ ■ ■ ■ ■
+        //1 1 1 ■ □ ■ □ ■
         let black = SquaresColor::Black;
         let white = SquaresColor::default();
+        let mut filed = PicrossFiled::new(vec![
+            vec![black, black, white, white, white],
+            vec![black, black, white, white, white],
+            vec![black, white, black, white, white],
+            vec![white, black, black, black, black],
+            vec![black, white, black, white, black],
+        ]);
+        filed.fill_charenge(0, 0);
+        assert!(!filed.is_clear());
+        filed.fill_charenge(0, 1);
+        assert!(!filed.is_clear());
+        filed.fill_charenge(1, 0);
+        assert!(!filed.is_clear());
+        filed.fill_charenge(1, 1);
+        assert!(!filed.is_clear());
+        filed.fill_charenge(2, 0);
+        assert!(!filed.is_clear());
+        filed.fill_charenge(2, 2);
+        assert!(!filed.is_clear());
+        filed.fill_charenge(3, 1);
+        assert!(!filed.is_clear());
+        filed.fill_charenge(3, 2);
+        assert!(!filed.is_clear());
+        filed.fill_charenge(3, 3);
+        assert!(!filed.is_clear());
+        filed.fill_charenge(3, 4);
+        assert!(!filed.is_clear());
+        filed.fill_charenge(4, 0);
+        assert!(!filed.is_clear());
+        filed.fill_charenge(4, 2);
+        assert!(!filed.is_clear());
+        filed.fill_charenge(4, 4);
+        assert!(filed.is_clear());
+    }
+    #[test]
+    fn fill_charenge_test() {
         let mut picross = fill_sample();
         assert!(!picross.fill_charenge(4, 2));
         assert!(!picross.fill_charenge(4, 3));
@@ -142,7 +233,6 @@ mod picross_test {
     fn new_test() {
         let black = SquaresColor::Black;
         let white = SquaresColor::default();
-
         //      1
         //    5 2 3 1 1
         //  2 ■ ■ □ □ □
@@ -246,6 +336,9 @@ impl Squares {
     }
     fn reverse(&mut self) {
         self.color.reverse()
+    }
+    fn done_fill(&self) -> bool {
+        self.color.done_fill()
     }
     fn can_fill(&self) -> bool {
         !self.color.done_fill() && self.can_fill
