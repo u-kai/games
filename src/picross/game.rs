@@ -8,14 +8,15 @@ pub struct PicrossFiled {
 }
 impl PicrossFiled {
     pub fn new(filed: Vec<Vec<SquaresColor>>) -> Self {
-        //      1
-        //    5 2 3 1 1
-        //  2 ■ ■ □ □ □
-        //  1 ■ □ □ □ □
-        //  3 ■ ■ ■ □ □
-        //  5 ■ ■ ■ ■ ■
-        //1 1 ■ □ ■ □ □
         let len = filed.len();
+        let squares_filed = filed
+            .iter()
+            .map(|row| {
+                row.iter()
+                    .map(|square| square.to_init_squares())
+                    .collect::<Vec<_>>()
+            })
+            .collect::<Vec<_>>();
         let mut above_rules = vec![vec![0; len]; len];
         let mut left_rules = vec![vec![0; len]; len];
         let mut above_indexs = vec![0; len];
@@ -33,7 +34,7 @@ impl PicrossFiled {
             }
         }
         Self {
-            filed: vec![vec![Default::default(); len]; len],
+            filed: squares_filed,
             above_rules: Self::filtering_rule(above_rules),
             left_rules: Self::filtering_rule(left_rules),
         }
@@ -66,40 +67,6 @@ impl PicrossFiled {
     fn square_num(&self) -> usize {
         self.filed.len()
     }
-    fn simulation(&self, i: usize, j: usize) -> bool {
-        //      1
-        //    5 2 3 1 1
-        //  2 ■ ■ □ □ □
-        //  1 ■ □ □ □ □
-        //  3 ■ ■ ■ □ □
-        //  5 ■ ■ ■ ■ ■
-        //1 1 ■ □ ■ □ □
-        let mut copy = self.clone();
-        copy.filed[i][j].fill();
-        let row = copy.filed[i].clone();
-        let column = copy.column(j);
-        println!("{:?}", self.left_rules[i]);
-        println!("{:?}", self.above_rules[j]);
-        let mut row_rule = (&self.left_rules[i]).into_iter();
-        let mut column_rule = (&self.above_rules[j]).into_iter();
-        //if i == 2 && j == 2 {
-        //println!("i = {} j = {}", i, j);
-        //println!("row = {:?}", row);
-        //println!("row_rule = {:?}", row_rule);
-
-        //println!("column = {:?}", column);
-        //println!("column_rule = {:?}", column_rule);
-        //println!("row_ok {}", row_ok(row.clone(), &mut row_rule.clone(), 0));
-        //println!(
-        //"column_ok {}",
-        //row_ok(column.clone(), &mut column_rule.clone(), 0)
-        //);
-        //}
-        //if row_ok(row, &mut row_rule, 0) && row_ok(column, &mut column_rule, 0) {
-        //return true;
-        //}
-        false
-    }
     fn can_fill(&self, i: usize, j: usize) -> bool {
         if i >= self.square_num() || j >= self.square_num() {
             panic!(
@@ -109,28 +76,7 @@ impl PicrossFiled {
                 self.square_num()
             );
         };
-        if self.filed[i][j].color == SquaresColor::Black {
-            return false;
-        }
-        self.simulation(i, j)
-    }
-    fn column_filled_num(&self, j: usize) -> usize {
-        self.filed.iter().fold(0, |acc, row| {
-            acc + {
-                row.iter().enumerate().fold(0, |acc, (index, cell)| {
-                    acc + if cell.color.done_fill() && j == index {
-                        1
-                    } else {
-                        0
-                    }
-                })
-            }
-        })
-    }
-    fn row_filled_num(&self, i: usize) -> usize {
-        self.filed[i].iter().fold(0, |acc, cell| {
-            acc + if cell.color.done_fill() { 1 } else { 0 }
-        })
+        self.filed[i][j].can_fill()
     }
 }
 
@@ -152,142 +98,10 @@ impl Debug for PicrossFiled {
         write!(f, "{}", s)
     }
 }
-fn row_ok<'a>(v: Vec<Squares>, rules: impl Iterator<Item = &'a usize>) -> bool {
-    let need_white_num = rules.fold(0, |acc, cur| acc + cur + 1) - 1;
-    let white_num = v
-        .iter()
-        .filter(|s| s.color == SquaresColor::White)
-        .collect::<Vec<_>>()
-        .len();
-    let black_num = v.len() - white_num;
-    println!("need {:?}", need_white_num);
-    println!("white_num {:?}", white_num);
-    need_white_num <= white_num //|| black_num == need_num
-                                //let skip_num = 1;
-                                //let rule = rules.next();
-                                //if rule == None {
-                                //return true;
-                                //}
-                                //let rule = *rule.unwrap();
-                                //println!("rule {:?}", rule);
-                                //println!("index {:?}", start_index);
-                                //let start = v.iter().enumerate().skip(start_index);
-                                //let white_num = v
-                                //.iter()
-                                //.skip(start_index)
-                                //.filter(|s| s.color == SquaresColor::White)
-                                //.collect::<Vec<_>>()
-                                //.len();
-                                //let black_num = v
-                                //.iter()
-                                //.skip(start_index)
-                                //.filter(|s| s.color == SquaresColor::Black)
-                                //.collect::<Vec<_>>()
-                                //.len();
-                                //if white_num + black_num < rule {
-                                //return false;
-                                //}
-                                //let left_len = v.len() - start_index;
-                                //println!("start {:?}", start.clone().collect::<Vec<_>>());
-                                //let from_black_to_end = start
-                                //.skip_while(|(_, s)| s.color == SquaresColor::White)
-                                //.collect::<Vec<_>>();
-                                //println!("start_black {:?}", from_black_to_end);
-                                //let sequence_black = from_black_to_end
-                                //.iter()
-                                //.take_while(|(_, s)| s.color == SquaresColor::Black)
-                                //.collect::<Vec<_>>();
-
-    //println!("sequence_black {:?}", sequence_black);
-    //let len = sequence_black.len();
-    //if len > rule {
-    //return false;
-    //}
-    //let next_start_index = match sequence_black.last() {
-    //Some(last) => last.0 + 1 + skip_num,
-    //None => {
-    //if rule == 0 {
-    //return true;
-    //}
-    //v.len()
-    //}
-    //};
-    //row_ok(v, rules, next_start_index)
-}
 
 #[cfg(test)]
 mod picross_test {
     use super::*;
-    #[test]
-    fn row_simutaltion_test() {
-        let black = Squares::new(SquaresColor::Black, true);
-        let white = Squares::new(SquaresColor::White, true);
-
-        let row = vec![white, black, black];
-        let rules: [usize; 1] = [2];
-        let start_index = 0;
-        assert!(row_ok(row, rules.iter()));
-
-        //let row = vec![white, white, black];
-        //let rules: [usize; 2] = [1, 1];
-        //let start_index = 0;
-        //assert!(row_ok(row, &mut rules.iter(), start_index));
-
-        //let row = vec![black, white, white, white, white];
-        //let rules: [usize; 2] = [1, 2];
-        //let start_index = 0;
-        //assert!(row_ok(row, &mut rules.iter(), start_index));
-
-        //let row = vec![white, white, black, white, white];
-        //let rules: [usize; 1] = [4];
-        //let start_index = 0;
-        //assert!(row_ok(row, &mut rules.iter(), start_index));
-
-        //let row = vec![black, white, black, white, white];
-        //let rules: [usize; 2] = [1, 1];
-        //let start_index = 0;
-        //assert!(row_ok(row, &mut rules.iter(), start_index));
-
-        //let row = vec![black, black, white, white, black];
-        //let rules: [usize; 2] = [2, 1];
-        //let start_index = 0;
-        //assert!(row_ok(row, &mut rules.iter(), start_index));
-
-        //let row = vec![black, black, black, black, white];
-        //let rules: [usize; 2] = [2, 1];
-        //let start_index = 0;
-        //assert!(!row_ok(row, &mut rules.iter(), start_index));
-
-        //let row = vec![white, black, black, white, black];
-        //let rules: [usize; 2] = [2, 1];
-        //let start_index = 0;
-        //assert!(row_ok(row, &mut rules.iter(), start_index));
-
-        //let row = vec![white, white, black, white, black];
-        //let rules: [usize; 2] = [2, 1];
-        //let start_index = 0;
-        //assert!(row_ok(row, &mut rules.iter(), start_index));
-
-        //let row = vec![white, white, white, white, black];
-        //let rules: [usize; 1] = [0];
-        //let start_index = 0;
-        //assert!(!row_ok(row, &mut rules.iter(), start_index));
-
-        //let row = vec![white, black, white, black, black];
-        //let rules: [usize; 2] = [1, 3];
-        //let start_index = 0;
-        //assert!(!row_ok(row, &mut rules.iter(), start_index));
-
-        //let row = vec![white, white, white, white, white];
-        //let rules: [usize; 1] = [0];
-        //let start_index = 0;
-        //assert!(row_ok(row, &mut rules.iter(), start_index));
-
-        //let row = vec![black, black, black, black, black];
-        //let rules: [usize; 1] = [5];
-        //let start_index = 0;
-        //assert!(row_ok(row, &mut rules.iter(), start_index));
-    }
     fn fill_sample() -> PicrossFiled {
         let black = SquaresColor::Black;
         let white = SquaresColor::default();
@@ -312,53 +126,17 @@ mod picross_test {
         picross.fill_charenge(3, 4);
         picross.fill_charenge(4, 0);
         picross.fill_charenge(4, 2);
+        println!("{:?}", picross);
+
         picross
     }
     #[test]
-    fn filled_num_test() {
-        //let picross = fill_sample();
-        //println!("{:?}", picross);
-        //println!("above {:#?}", picross.above_rules);
-        //println!("left {:#?}", picross.left_rules);
-        //// row
-        //assert_eq!(picross.row_filled_num(0), 2);
-        //assert_eq!(picross.row_filled_num(1), 1);
-        //assert_eq!(picross.row_filled_num(2), 3);
-        //assert_eq!(picross.row_filled_num(3), 5);
-        //assert_eq!(picross.row_filled_num(4), 2);
-        ////column
-        //assert_eq!(picross.column_filled_num(0), 5);
-        //assert_eq!(picross.column_filled_num(1), 3);
-        //assert_eq!(picross.column_filled_num(2), 3);
-        //assert_eq!(picross.column_filled_num(3), 1);
-        //assert_eq!(picross.column_filled_num(4), 1);
-    }
-    #[test]
     fn fill_charenge_test() {
-        //let black = SquaresColor::Black;
-        //let white = SquaresColor::default();
-        //let mut picross = PicrossFiled::new(vec![
-        //vec![black, black, white, white, white],
-        //vec![black, white, white, white, white],
-        //vec![black, black, black, white, white],
-        //vec![black; 5],
-        //vec![black, white, black, white, white],
-        //]);
-        //assert!(picross.fill_charenge(0, 1));
-        //assert!(picross.fill_charenge(0, 2));
-        //assert!(picross.fill_charenge(1, 0));
-        //assert!(picross.fill_charenge(2, 0));
-        //assert!(picross.fill_charenge(2, 1));
-        //assert!(picross.fill_charenge(2, 2));
-        //assert!(picross.fill_charenge(3, 0));
-        //assert!(picross.fill_charenge(3, 1));
-        //assert!(picross.fill_charenge(3, 2));
-        //assert!(picross.fill_charenge(3, 3));
-        //assert!(picross.fill_charenge(3, 4));
-        //assert!(picross.fill_charenge(4, 0));
-        //assert!(picross.fill_charenge(4, 2));
-        //assert!(!picross.fill_charenge(4, 2));
-        //assert!(!picross.fill_charenge(4, 3));
+        let black = SquaresColor::Black;
+        let white = SquaresColor::default();
+        let mut picross = fill_sample();
+        assert!(!picross.fill_charenge(4, 2));
+        assert!(!picross.fill_charenge(4, 3));
     }
     #[test]
     fn new_test() {
@@ -430,20 +208,20 @@ mod picross_test {
         //  3 ■ ■ ■
         //  1 □ ■ □
         //  2 □ ■ ■
-        //let ok = Squares::new(SquaresColor::White, true);
-        //let ng = Squares::new(SquaresColor::White, false);
-        //let mut filed = PicrossFiled {
-        //filed: vec![vec![ok, ok, ok], vec![ng, ok, ng], vec![ng, ok, ok]],
-        //left_rules: vec![vec![3], vec![1], vec![2]],
-        //above_rules: vec![vec![1], vec![3], vec![1, 1]],
-        //};
-        //assert!(filed.can_fill(0, 0));
-        //assert!(filed.can_fill(0, 1));
-        //assert!(filed.can_fill(0, 2));
-        //filed.fill_charenge(2, 1);
-        //filed.fill_charenge(2, 2);
-        //println!("{:?}", filed);
-        //assert!(!filed.can_fill(2, 0))
+        let ok = Squares::new(SquaresColor::White, true);
+        let ng = Squares::new(SquaresColor::White, false);
+        let mut filed = PicrossFiled {
+            filed: vec![vec![ok, ok, ok], vec![ng, ok, ng], vec![ng, ok, ok]],
+            left_rules: vec![vec![3], vec![1], vec![2]],
+            above_rules: vec![vec![1], vec![3], vec![1, 1]],
+        };
+        assert!(filed.can_fill(0, 0));
+        assert!(filed.can_fill(0, 1));
+        assert!(filed.can_fill(0, 2));
+        filed.fill_charenge(2, 1);
+        filed.fill_charenge(2, 2);
+        println!("{:?}", filed);
+        assert!(!filed.can_fill(2, 0))
     }
 }
 #[derive(PartialEq, Clone, Copy, Debug)]
@@ -470,7 +248,7 @@ impl Squares {
         self.color.reverse()
     }
     fn can_fill(&self) -> bool {
-        self.color == SquaresColor::White && self.can_fill
+        !self.color.done_fill() && self.can_fill
     }
 }
 #[derive(PartialEq, Clone, Copy)]
@@ -482,6 +260,18 @@ pub enum SquaresColor {
 impl SquaresColor {
     fn fill(&mut self) {
         *self = Self::Black
+    }
+    fn to_init_squares(&self) -> Squares {
+        match self {
+            Self::Black => Squares {
+                color: Self::White,
+                can_fill: true,
+            },
+            Self::White => Squares {
+                color: Self::White,
+                can_fill: false,
+            },
+        }
     }
     fn reverse(&mut self) {
         match self {
