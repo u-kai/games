@@ -1,6 +1,9 @@
 use picross::game::{PicrossFiled, SquaresColor};
 
+use crate::helper::input::get_i_j;
+
 mod gomoku_narabe;
+mod helper;
 mod masu;
 mod osero;
 mod picross;
@@ -16,20 +19,19 @@ fn main() {
         vec![black; 5],
         vec![black, white, black, white, white],
     ]);
-    picross.fill_charenge(0, 0);
-    picross.fill_charenge(0, 1);
-    picross.fill_charenge(0, 2);
-    picross.fill_charenge(1, 0);
-    picross.fill_charenge(1, 1);
-    picross.fill_charenge(2, 0);
-    picross.fill_charenge(2, 1);
-    picross.fill_charenge(2, 2);
-    picross.fill_charenge(3, 0);
-    picross.fill_charenge(3, 1);
-    picross.fill_charenge(3, 2);
-    picross.fill_charenge(3, 3);
-    picross.fill_charenge(3, 4);
-    picross.fill_charenge(4, 0);
-    picross.fill_charenge(4, 2);
+    println!("スタート");
+    println!();
+    loop {
+        println!("{:?}", picross);
+        let d = get_i_j();
+        if picross.fill_charenge(d.0, d.1) {
+            if picross.is_clear() {
+                println!("クリア");
+                break;
+            }
+        } else {
+            println!("そこには置けません")
+        };
+    }
     println!("{:?}", picross);
 }

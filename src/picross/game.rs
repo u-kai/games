@@ -39,20 +39,57 @@ impl PicrossFiled {
             left_rules: Self::filtering_rule(left_rules),
         }
     }
+    pub fn to_string(&self) -> String {
+        let mut s = String::new();
+        let left_max_len = self.left_rules.iter().map(|v| v.len()).max().unwrap();
+        let above_max_len = self.above_rules.iter().map(|v| v.len()).max().unwrap();
+        let blank = " ";
+        let left_blank =
+            (0..left_max_len).fold(String::new(), |acc, _| format!("{}{} ", acc, blank));
+        for i in (0..above_max_len).rev() {
+            s = format!("{}{}", s, left_blank);
+            for row in &self.above_rules {
+                let add_s = match row.get(i) {
+                    Some(num) => num.to_string(),
+                    None => " ".to_string(),
+                };
+                s = format!("{}{} ", s, add_s);
+            }
+            s.pop();
+            s.push('\n');
+        }
+        for (r, row) in self.left_rules.iter().enumerate() {
+            for i in (0..left_max_len).rev() {
+                let add_s = match row.get(i) {
+                    Some(num) => num.to_string(),
+                    None => " ".to_string(),
+                };
+                s = format!("{}{} ", s, add_s);
+            }
+            let row = &self.filed[r];
+            for squares in row {
+                match squares.color {
+                    SquaresColor::Black => s = format!("{}■ ", s,),
+                    _ => s = format!("{}□ ", s),
+                };
+            }
+            s.push('\n');
+        }
+        s.pop();
+        s
+    }
     pub fn is_clear(&self) -> bool {
         self.filed.iter().all(|row| {
             row.iter()
                 .all(|s| (s.can_fill() && s.done_fill()) || !s.can_fill())
         })
     }
-    fn column(&self, j: usize) -> Vec<Squares> {
-        self.filed.iter().map(|row| row[j]).collect()
-    }
     fn filtering_rule(rules: Vec<Vec<usize>>) -> Vec<Vec<usize>> {
         rules
             .into_iter()
             .map(|row| {
-                let excloud_zero = row.into_iter().filter(|n| *n != 0).collect::<Vec<_>>();
+                let mut excloud_zero = row.into_iter().filter(|n| *n != 0).collect::<Vec<_>>();
+                excloud_zero.reverse();
                 if excloud_zero.len() == 0 {
                     vec![0]
                 } else {
@@ -63,7 +100,6 @@ impl PicrossFiled {
     }
     pub fn fill_charenge(&mut self, i: usize, j: usize) -> bool {
         if !self.can_fill(i, j) {
-            println!("i {} j {} is not fill", i, j);
             false
         } else {
             self.filed[i][j].fill();
@@ -88,26 +124,43 @@ impl PicrossFiled {
 
 impl Debug for PicrossFiled {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        let mut s = String::new();
-        for row in &self.filed {
-            let mut r = String::new();
-            for cell in row {
-                let square = if cell.color == SquaresColor::Black {
-                    "■"
-                } else {
-                    "□"
-                };
-                r = format!("{}{} ", r, square);
-            }
-            s = format!("{}{}\n", s, r)
-        }
-        write!(f, "{}", s)
+        write!(f, "{}", self.to_string())
     }
 }
 
 #[cfg(test)]
 mod picross_test {
     use super::*;
+    #[test]
+    fn to_string_test() {
+        //      3 2
+        //      1 1 3 1 2
+        //    2 ■ ■ □ □ □
+        //    2 ■ ■ □ □ □
+        //  1 1 ■ □ ■ □ □
+        //    4 □ ■ ■ ■ ■
+        //1 1 1 ■ □ ■ □ ■
+
+        let black = SquaresColor::Black;
+        let white = SquaresColor::default();
+        let picross = PicrossFiled::new(vec![
+            vec![black, black, white, white, white],
+            vec![black, black, white, white, white],
+            vec![black, white, black, white, white],
+            vec![white, black, black, black, black],
+            vec![black, white, black, white, black],
+        ]);
+        let tobe = String::from(
+            "      3 2      
+      1 1 3 1 2
+    2 □ □ □ □ □ 
+    2 □ □ □ □ □ 
+  1 1 □ □ □ □ □ 
+    4 □ □ □ □ □ 
+1 1 1 □ □ □ □ □ ",
+        );
+        assert_eq!(picross.to_string(), tobe);
+    }
     fn picross_sample() -> PicrossFiled {
         let black = SquaresColor::Black;
         let white = SquaresColor::default();
@@ -121,6 +174,13 @@ mod picross_test {
         picross
     }
     fn fill_sample() -> PicrossFiled {
+        //      3 2
+        //      1 1 3 1 2
+        //    2 ■ ■ □ □ □
+        //    2 ■ ■ □ □ □
+        //  1 1 ■ □ ■ □ □
+        //    4 □ ■ ■ ■ ■
+        //1 1 1 ■ □ ■ □ ■
         let black = SquaresColor::Black;
         let white = SquaresColor::default();
         let mut picross = PicrossFiled::new(vec![
@@ -253,7 +313,7 @@ mod picross_test {
         );
         assert_eq!(
             filed.above_rules,
-            vec![vec![5], vec![1, 2], vec![3], vec![1], vec![1]],
+            vec![vec![5], vec![2, 1], vec![3], vec![1], vec![1]],
         );
         //        1
         //    1 3 1
@@ -288,7 +348,7 @@ mod picross_test {
         );
         assert_eq!(
             filed.above_rules,
-            vec![vec![3, 1], vec![2, 1], vec![3], vec![1], vec![2]],
+            vec![vec![1, 3], vec![1, 2], vec![3], vec![1], vec![2]],
         );
     }
     #[test]
@@ -333,9 +393,6 @@ impl Squares {
     }
     fn fill(&mut self) {
         self.color.fill();
-    }
-    fn reverse(&mut self) {
-        self.color.reverse()
     }
     fn done_fill(&self) -> bool {
         self.color.done_fill()
