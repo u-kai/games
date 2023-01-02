@@ -9,6 +9,8 @@ pub struct PicrossFiled {
 impl PicrossFiled {
     pub fn new(filed: Vec<Vec<SquaresColor>>) -> Self {
         let len = filed.len();
+        let left_len = filed.len();
+        let above_len = filed[0].len();
         let squares_filed = filed
             .iter()
             .map(|row| {
@@ -17,8 +19,8 @@ impl PicrossFiled {
                     .collect::<Vec<_>>()
             })
             .collect::<Vec<_>>();
-        let mut above_rules = vec![vec![0; len]; len];
-        let mut left_rules = vec![vec![0; len]; len];
+        let mut above_rules = vec![vec![0; len]; above_len];
+        let mut left_rules = vec![vec![0; len]; left_len];
         let mut above_indexs = vec![0; len];
         for (i, row) in filed.into_iter().enumerate() {
             let mut left_index = 0;
@@ -97,6 +99,11 @@ impl PicrossFiled {
                 }
             })
             .collect()
+    }
+    pub fn fill_charenge_index_one(&mut self, i: usize, j: usize) -> bool {
+        let i = i - 1;
+        let j = j - 1;
+        self.fill_charenge(i, j)
     }
     pub fn fill_charenge(&mut self, i: usize, j: usize) -> bool {
         if !self.can_fill(i, j) {

@@ -13,11 +13,16 @@ fn main() {
     let black = SquaresColor::Black;
     let white = SquaresColor::default();
     let mut picross = PicrossFiled::new(vec![
-        vec![black, black, white, white, white],
-        vec![black, white, white, white, white],
-        vec![black, black, black, white, white],
-        vec![black; 5],
-        vec![black, white, black, white, white],
+        vec![white, white, black, white, white],
+        vec![white, black, black, black, white],
+        vec![white, black, black, black, white],
+        vec![white, black, black, black, white],
+        vec![white, black, black, black, white],
+        vec![white, white, black, white, white],
+        vec![white, white, black, white, white],
+        vec![white, white, black, white, white],
+        vec![black, black, black, black, black],
+        vec![black, black, black, black, black],
     ]);
     println!("スタート");
     println!();
