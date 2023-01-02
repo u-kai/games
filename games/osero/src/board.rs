@@ -1,4 +1,4 @@
-use crate::masu::board::MasuBoard;
+use masu::board::MasuBoard;
 
 use super::stone::OseroStone;
 pub struct OseroBoard {
@@ -368,7 +368,9 @@ impl OseroBoard {
 #[cfg(test)]
 mod osero_test {
 
-    use crate::{masu::board::MasuBoard, osero::stone::OseroStone};
+    use masu::board::MasuBoard;
+
+    use crate::stone::OseroStone;
 
     use super::OseroBoard;
 

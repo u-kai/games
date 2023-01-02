@@ -1,9 +1,7 @@
-use std::fmt::{write, Debug};
+use std::fmt::Debug;
 
-use crate::{
-    masu::calcurator::IndexCalcurator,
-    syogi::koma::{create_index, maybe_to_vec, SyogiKoma, RL},
-};
+use crate::koma::{create_index, maybe_to_vec, SyogiKoma, RL};
+use masu::calcurator::IndexCalcurator;
 
 #[derive(Clone, PartialEq, Eq)]
 pub struct Hisya {
@@ -54,7 +52,7 @@ impl Debug for Hisya {
 #[cfg(test)]
 
 mod hisya_test {
-    use crate::syogi::koma::{create_index, SyogiKoma, RL};
+    use crate::koma::{create_index, SyogiKoma, RL};
 
     use super::Hisya;
     #[test]

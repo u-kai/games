@@ -190,7 +190,8 @@ impl IndexCalcurator {
 
 #[cfg(test)]
 mod index_test {
-    use crate::masu::calcurator::IndexCalcurator;
+    use crate::calcurator::IndexCalcurator;
+
     #[test]
     fn get_up_line_test() {
         assert_eq!(

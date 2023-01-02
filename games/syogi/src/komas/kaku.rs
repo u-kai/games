@@ -1,9 +1,7 @@
 use std::fmt::Debug;
 
-use crate::{
-    masu::calcurator::IndexCalcurator,
-    syogi::koma::{create_index, maybe_to_vec, SyogiKoma, RL},
-};
+use crate::koma::{create_index, maybe_to_vec, SyogiKoma, RL};
+use masu::calcurator::IndexCalcurator;
 
 #[derive(Clone, PartialEq, Eq)]
 pub struct Kaku {
@@ -63,13 +61,10 @@ impl Debug for Kaku {
 
 #[cfg(test)]
 mod kaku_test {
-    use crate::{
-        masu::calcurator::IndexCalcurator,
-        syogi::{
-            koma::{create_index, SyogiKoma, RL},
-            komas::kaku::Kaku,
-        },
-    };
+    use crate::koma::{create_index, SyogiKoma, RL};
+    use masu::calcurator::IndexCalcurator;
+
+    use super::Kaku;
     #[test]
     fn movavle_paths_case_rev_test() {
         // | | | | | | | | | |

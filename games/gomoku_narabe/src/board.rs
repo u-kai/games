@@ -1,4 +1,4 @@
-use crate::masu::board::MasuBoard;
+use masu::board::MasuBoard;
 
 use super::c_or_x::CorX;
 
@@ -134,7 +134,8 @@ impl GomokuBoard {
 
 #[cfg(test)]
 mod gomoku_test {
-    use crate::gomoku_narabe::c_or_x::CorX;
+
+    use crate::c_or_x::CorX;
 
     use super::GomokuBoard;
     #[test]

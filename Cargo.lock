@@ -3,5 +3,34 @@
 version = 3
 
 [[package]]
-name = "games"
+name = "common"
 version = "0.1.0"
+
+[[package]]
+name = "gomoku_narabe"
+version = "0.1.0"
+dependencies = [
+ "masu",
+]
+
+[[package]]
+name = "masu"
+version = "0.1.0"
+
+[[package]]
+name = "osero"
+version = "0.1.0"
+dependencies = [
+ "masu",
+]
+
+[[package]]
+name = "picross"
+version = "0.1.0"
+
+[[package]]
+name = "syogi"
+version = "0.1.0"
+dependencies = [
+ "masu",
+]

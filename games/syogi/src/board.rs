@@ -1,9 +1,7 @@
-use std::fmt::Debug;
-
-use crate::masu::{calcurator::IndexCalcurator, nboard::MasuBoard};
+use masu::{calcurator::IndexCalcurator, nboard::MasuBoard};
 
 use super::{
-    koma::{create_index, Koma, SyogiKoma, RL},
+    koma::{create_index, Koma, RL},
     komas::{gin::Gin, keima::Keima, kin::Kin, kyosya::Kyosya, ohsyo::Ohsyo},
 };
 

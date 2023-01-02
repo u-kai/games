@@ -1,6 +1,6 @@
 use std::fmt::Debug;
 
-use crate::masu::calcurator::IndexCalcurator;
+use masu::calcurator::IndexCalcurator;
 
 use super::komas::{
     gin::Gin, hisya::Hisya, hohei::Hohei, kaku::Kaku, keima::Keima, kin::Kin, kyosya::Kyosya,

@@ -500,7 +500,8 @@ mod masu_new_test {
             masu.all()
         )
     }
-    use crate::masu::masu::Masu;
+
+    use crate::masu::Masu;
 
     use super::MasuBoard;
     #[derive(Clone, Copy, PartialEq, Eq, Debug)]

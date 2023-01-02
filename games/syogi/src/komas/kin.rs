@@ -1,7 +1,6 @@
-use crate::{
-    masu::calcurator::IndexCalcurator,
-    syogi::koma::{create_index, maybe_to_vec, SyogiKoma, RL},
-};
+use masu::calcurator::IndexCalcurator;
+
+use crate::koma::{create_index, maybe_to_vec, SyogiKoma, RL};
 
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct Kin {
@@ -71,7 +70,7 @@ pub fn kin_move(r_l: RL, holizon: usize, valtical: usize) -> Vec<Vec<IndexCalcur
 }
 #[cfg(test)]
 mod kin_tests {
-    use crate::syogi::koma::{create_index, SyogiKoma, RL};
+    use crate::koma::{create_index, SyogiKoma, RL};
 
     use super::Kin;
     #[test]

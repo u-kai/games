@@ -1,9 +1,8 @@
 use std::fmt::Debug;
 
-use crate::{
-    masu::calcurator::IndexCalcurator,
-    syogi::koma::{create_index, maybe_to_vec, SyogiKoma, RL},
-};
+use masu::calcurator::IndexCalcurator;
+
+use crate::koma::{create_index, maybe_to_vec, SyogiKoma, RL};
 
 #[derive(Clone, PartialEq, Eq)]
 pub struct Ohsyo {
@@ -57,11 +56,8 @@ impl Debug for Ohsyo {
 #[cfg(test)]
 mod ohsyo_tests {
     use crate::{
-        masu::calcurator::IndexCalcurator,
-        syogi::{
-            koma::{create_index, SyogiKoma, RL},
-            komas::ohsyo::Ohsyo,
-        },
+        koma::{create_index, SyogiKoma, RL},
+        komas::ohsyo::Ohsyo,
     };
 
     #[test]

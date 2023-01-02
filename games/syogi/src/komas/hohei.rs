@@ -1,37 +1,32 @@
-use crate::{
-    masu::calcurator::IndexCalcurator,
-    syogi::koma::{create_index, maybe_to_vec, SyogiKoma, RL},
-};
+use masu::calcurator::IndexCalcurator;
 
-use super::kin::{kin_move, Kin};
+use crate::koma::{create_index, maybe_to_vec, SyogiKoma, RL};
+
+use super::kin::kin_move;
 
 #[derive(Debug, Clone, PartialEq, Eq)]
-pub struct Kyosya {
-    r_l: RL,
+pub struct Hohei {
     is_rev: bool,
+    r_l: RL,
 }
 
-impl Kyosya {
+impl Hohei {
     pub fn new(r_l: RL) -> Self {
-        Kyosya { r_l, is_rev: false }
+        Hohei { r_l, is_rev: false }
     }
 }
 
-impl SyogiKoma for Kyosya {
+impl SyogiKoma for Hohei {
     fn movable_paths(&self, holizon: usize, valtical: usize) -> Vec<Vec<IndexCalcurator>> {
         let now_index = create_index(holizon, valtical);
-        match self.r_l {
-            RL::Right => {
-                if self.is_rev {
-                    return kin_move(self.r_l.clone(), holizon, valtical);
+        if self.is_rev {
+            kin_move(self.r_l.clone(), holizon, valtical)
+        } else {
+            match self.r_l {
+                RL::Right => {
+                    vec![maybe_to_vec(now_index.get_up())]
                 }
-                vec![now_index.get_up_line()]
-            }
-            _ => {
-                if self.is_rev {
-                    return kin_move(self.r_l.clone(), holizon, valtical);
-                }
-                vec![now_index.get_down_line()]
+                RL::Left => vec![maybe_to_vec(now_index.get_down())],
             }
         }
     }
@@ -39,16 +34,13 @@ impl SyogiKoma for Kyosya {
         self.is_rev = true
     }
 }
-
 #[cfg(test)]
+mod ho_test {
+    use crate::koma::{create_index, SyogiKoma, RL};
 
-mod kyosya_tests {
-    use crate::syogi::koma::{create_index, SyogiKoma, RL};
-
-    use super::Kyosya;
+    use super::Hohei;
     #[test]
-
-    fn movable_paths_case_R_rev_test() {
+    fn case_R_case_rev() {
         // | | | | | | | | | |
         // | | | | | | | | | |
         // | | | | | | | | | |
@@ -56,12 +48,12 @@ mod kyosya_tests {
         // | | | | | | | | | |
         // | | | | | | | | | |
         // | | | | | | | | | |
-        // | |香車| | | | | | | |<-(1,7)
+        // | |歩兵| | | | | | | |<-(1,7)
         // | | | | | | | | | |
-        let mut kyosya = Kyosya::new(RL::Right);
-        kyosya.rev();
+        let mut ho = Hohei::new(RL::Right);
+        ho.rev();
         assert_eq!(
-            kyosya.movable_paths(1, 7),
+            ho.movable_paths(1, 7),
             vec![
                 //up
                 vec![create_index(1, 6)],
@@ -79,8 +71,7 @@ mod kyosya_tests {
         )
     }
     #[test]
-
-    fn movable_paths_case_L_rev_test() {
+    fn case_L_rev() {
         // | | | | | | | | | |
         // | | | | | | | | | |
         // | | | | | | | | | |
@@ -88,12 +79,12 @@ mod kyosya_tests {
         // | | | | | | | | | |
         // | | | | | | | | | |
         // | | | | | | | | | |
-        // | |香車| | | | | | | |<-(1,7)
+        // | |歩兵| | | | | | | |<-(1,7)
         // | | | | | | | | | |
-        let mut kyosya = Kyosya::new(RL::Left);
-        kyosya.rev();
+        let mut ho = Hohei::new(RL::Left);
+        ho.rev();
         assert_eq!(
-            kyosya.movable_paths(1, 7),
+            ho.movable_paths(1, 7),
             vec![
                 //up
                 vec![create_index(1, 6)],
@@ -110,55 +101,45 @@ mod kyosya_tests {
             ]
         )
     }
-    #[test]
 
-    fn movable_paths_case_L_test() {
+    #[test]
+    fn case_R() {
         // | | | | | | | | | |
         // | | | | | | | | | |
         // | | | | | | | | | |
         // | | | | | | | | | |
         // | | | | | | | | | |
         // | | | | | | | | | |
+        // | |歩兵| | | | | | | |<-(1,6)
         // | | | | | | | | | |
-        // | |香車| | | | | | | |<-(1,7)
         // | | | | | | | | | |
-        let kyosya = Kyosya::new(RL::Left);
+        let ho = Hohei::new(RL::Right);
         assert_eq!(
-            kyosya.movable_paths(1, 7),
-            vec![
-                //down-line
-                vec![create_index(1, 8)],
-            ]
+            ho.movable_paths(1, 6),
+            vec![vec![
+                //up
+                create_index(1, 5)
+            ]]
         )
     }
-
     #[test]
-
-    fn movable_paths_case_R_test() {
+    fn case_L() {
         // | | | | | | | | | |
         // | | | | | | | | | |
         // | | | | | | | | | |
         // | | | | | | | | | |
         // | | | | | | | | | |
         // | | | | | | | | | |
+        // | |歩兵| | | | | | | |<-(1,6)
         // | | | | | | | | | |
-        // | |香車| | | | | | | |<-(1,7)
         // | | | | | | | | | |
-        let kyosya = Kyosya::new(RL::Right);
+        let ho = Hohei::new(RL::Left);
         assert_eq!(
-            kyosya.movable_paths(1, 7),
-            vec![
-                //up-line
-                vec![
-                    create_index(1, 6),
-                    create_index(1, 5),
-                    create_index(1, 4),
-                    create_index(1, 3),
-                    create_index(1, 2),
-                    create_index(1, 1),
-                    create_index(1, 0)
-                ],
-            ]
+            ho.movable_paths(1, 6),
+            vec![vec![
+                //down
+                create_index(1, 7)
+            ]]
         )
     }
 }
